@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace eShopApplication.Infrastructure.DataAccess
 {
-    public class BoardDbContextConfiguration : IDbContextOptionsConfigurator<BoardDbContext>
+    public class eShopApplicationDbContextConfiguration : IDbContextOptionsConfigurator<eShopApplicationDbContext>
     {
 
         private const string MSSQLConnectionStringName = "Data Source=(localdb)\\MSSQLLocalDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
@@ -18,13 +18,13 @@ namespace eShopApplication.Infrastructure.DataAccess
         private readonly IConfiguration _configuration;
         private readonly ILoggerFactory _loggerFactory;
 
-        public BoardDbContextConfiguration(IConfiguration configuration, ILoggerFactory loggerFactory)
+        public eShopApplicationDbContextConfiguration(IConfiguration configuration, ILoggerFactory loggerFactory)
         {
             _configuration = configuration;
             _loggerFactory = loggerFactory;
         }
 
-        public void Configure(DbContextOptionsBuilder<BoardDbContext> options)
+        public void Configure(DbContextOptionsBuilder<eShopApplicationDbContext> options)
         {
             var connectionString = _configuration.GetConnectionString(MSSQLConnectionStringName);
             if (string.IsNullOrWhiteSpace(connectionString))

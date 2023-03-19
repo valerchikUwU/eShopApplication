@@ -10,7 +10,7 @@ namespace eShopApplication.Domain
     public class Account
     {
         [Key]
-        [Required] 
+        [Required]
         public Guid Id { get; set; }
 
         [Required]
@@ -23,6 +23,6 @@ namespace eShopApplication.Domain
         public string Password { get; set; }
 
         [Required]
-        public DateTime RegistrationDate{ get; set; } = DateTime.UtcNow;
+        public DateTime RegistrationDate { get; set; } = DateTime.UtcNow;
     }
 }

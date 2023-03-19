@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Services.AddSingleton<IDbContextOptionsConfigurator<BoardDbContext>, BoardDbContextConfiguration>();
+builder.Services.AddSingleton<IDbContextOptionsConfigurator<eShopApplicationDbContext>, eShopApplicationDbContextConfiguration>();
 
 
-builder.Services.AddDbContext<BoardDbContext>((Action<IServiceProvider, DbContextOptionsBuilder>)
-    ((sp, dbOptions) => sp.GetRequiredService<IDbContextOptionsConfigurator<BoardDbContext>>()
-        .Configure((DbContextOptionsBuilder<BoardDbContext>)dbOptions)));
+builder.Services.AddDbContext<eShopApplicationDbContext>((Action<IServiceProvider, DbContextOptionsBuilder>)
+    ((sp, dbOptions) => sp.GetRequiredService<IDbContextOptionsConfigurator<eShopApplicationDbContext>>()
+        .Configure((DbContextOptionsBuilder<eShopApplicationDbContext>)dbOptions)));
 
-builder.Services.AddScoped((Func<IServiceProvider, DbContext>)(sp => sp.GetRequiredService<BoardDbContext>()));
+builder.Services.AddScoped((Func<IServiceProvider, DbContext>)(sp => sp.GetRequiredService<eShopApplicationDbContext>()));
 
 builder.Services.AddControllers();
 

@@ -7,7 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Contracts\eShopApplication.Contracts\eShopApplication.Contracts.csproj" />
+	  <ProjectReference Include="C:\Users\koval\source\repos\eShopApplication\src\Domain\eShopApplication.Domain\eShopApplication.Domain.csproj" />
   </ItemGroup>
 
 </Project>

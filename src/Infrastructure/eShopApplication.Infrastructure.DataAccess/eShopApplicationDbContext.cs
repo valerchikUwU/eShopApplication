@@ -12,13 +12,13 @@ namespace eShopApplication.Infrastructure.DataAccess
     /// <summary>
     /// Контекст БД
     /// </summary>
-    public class BoardDbContext : DbContext
+    public class eShopApplicationDbContext : DbContext
     {
 
         /// <summary>
-        /// Инициализирует экземпляр <see cref="BoardDbContext"/>.
+        /// Инициализирует экземпляр <see cref="eShopApplicationDbContext"/>.
         /// </summary>
-        public BoardDbContext(DbContextOptions options)
+        public eShopApplicationDbContext(DbContextOptions options)
             : base(options)
         {
         }
