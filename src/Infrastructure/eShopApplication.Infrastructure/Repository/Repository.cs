@@ -42,13 +42,13 @@ namespace eShopApplication.Infrastructure.Repository
         }
 
         /// <inheritdoc />
-        public async Task<TEntity> GetByIdAsync(Guid id)
+        public async Task<TEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             return await DbSet.FindAsync(id);
         }
 
         /// <inheritdoc />
-        public async Task AddAsync(TEntity model)
+        public async Task AddAsync(TEntity model, CancellationToken cancellationToken)
         {
             if (model == null)
             {
@@ -60,7 +60,7 @@ namespace eShopApplication.Infrastructure.Repository
         }
 
         /// <inheritdoc />
-        public async Task UpdateAsync(TEntity model)
+        public async Task UpdateAsync(TEntity model, CancellationToken cancellationToken)
         {
             if (model == null)
             {
@@ -72,7 +72,7 @@ namespace eShopApplication.Infrastructure.Repository
         }
 
         /// <inheritdoc />
-        public async Task DeleteAsync(TEntity model)
+        public async Task DeleteAsync(TEntity model, CancellationToken cancellationToken)
         {
             if (model == null)
             {
@@ -81,6 +81,11 @@ namespace eShopApplication.Infrastructure.Repository
 
             DbSet.Remove(model);
             await DbContext.SaveChangesAsync();
+        }
+
+        public async Task<TEntity> GetByNameAsync(string name, CancellationToken cancellationToken)
+        {
+            return await DbSet.FindAsync(name);
         }
     }
 }

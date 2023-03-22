@@ -1,16 +1,12 @@
-﻿using eShopApplication.Contracts.Accounts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace eShopApplication.Application.AppData.Account.Repositories
+﻿namespace eShopApplication.Application.AppData.Accounts.Repository
 {
     public interface IAccountRepository
     {
-        Task<ReadAccountDto> CreateAccount(CreateAccountDto createAccountDto, CancellationToken cancellation);
-        Task<ReadAccountDto> GetAccountById(Guid id, CancellationToken cancellationToken);
-        Task<ReadAccountDto> GetAccountByName(string name, CancellationToken cancellationToken);
+        Task<Guid> AddAccountAsync(Domain.Account.Account account, CancellationToken cancellationToken);
+        Task<Domain.Account.Account> GetAccountByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<Domain.Account.Account> GetAccountByNameAsync(string name, CancellationToken cancellationToken);
+        Task<List<Domain.Account.Account>> GetAllAsync(CancellationToken cancellationToken);
+        Task<Guid> DeleteAccount(Guid id, CancellationToken cancellationToken);
+        Task<Domain.Account.Account> UpdateAccount(Guid id, CancellationToken cancellationToken);
     }
 }

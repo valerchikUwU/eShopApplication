@@ -13,7 +13,9 @@ namespace eShopApplication.Infrastructure.DataAccess
     public class eShopApplicationDbContextConfiguration : IDbContextOptionsConfigurator<eShopApplicationDbContext>
     {
 
-        private const string MSSQLConnectionStringName = "Data Source=(localdb)\\MSSQLLocalDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        private const string MSSQLConnectionStringName = "Data Source=(localdb)\\MSSQLLocalDB;" +
+            "Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;" +
+            "ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 
         private readonly IConfiguration _configuration;
         private readonly ILoggerFactory _loggerFactory;

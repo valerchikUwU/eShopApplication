@@ -15,7 +15,6 @@ builder.Services.AddDbContext<eShopApplicationDbContext>((Action<IServiceProvide
 builder.Services.AddScoped((Func<IServiceProvider, DbContext>)(sp => sp.GetRequiredService<eShopApplicationDbContext>()));
 
 builder.Services.AddControllers();
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

@@ -12,4 +12,12 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Application\eShopApplication.Application.AppData\eShopApplication.Application.AppData.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Contexts\Advert\Repository\" />
+  </ItemGroup>
+
 </Project>

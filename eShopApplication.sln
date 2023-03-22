@@ -19,17 +19,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{194CD7
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NewFolder1", "NewFolder1", "{CF473169-E1C8-4469-A224-4DD84FCD1DB9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eShopApplication.Host.Api", "src\Host\eShopApplication.Host.Api\eShopApplication.Host.Api.csproj", "{20ACDFA4-4525-4CD7-B2A6-D5F0F70DFF1E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopApplication.Host.Api", "src\Host\eShopApplication.Host.Api\eShopApplication.Host.Api.csproj", "{20ACDFA4-4525-4CD7-B2A6-D5F0F70DFF1E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eShopApplication.Contracts", "src\Contracts\eShopApplication.Contracts\eShopApplication.Contracts.csproj", "{571E2BBA-FA18-458C-8B19-6750AD13D1CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopApplication.Contracts", "src\Contracts\eShopApplication.Contracts\eShopApplication.Contracts.csproj", "{571E2BBA-FA18-458C-8B19-6750AD13D1CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eShopApplication.Domain", "src\Domain\eShopApplication.Domain\eShopApplication.Domain.csproj", "{09BF8976-BACF-4F3F-BB00-EA556D126938}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopApplication.Domain", "src\Domain\eShopApplication.Domain\eShopApplication.Domain.csproj", "{09BF8976-BACF-4F3F-BB00-EA556D126938}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eShopApplication.Infrastructure.DataAccess", "src\Infrastructure\eShopApplication.Infrastructure.DataAccess\eShopApplication.Infrastructure.DataAccess.csproj", "{90228854-ED64-4ACE-8C1F-A474C505A04E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopApplication.Infrastructure.DataAccess", "src\Infrastructure\eShopApplication.Infrastructure.DataAccess\eShopApplication.Infrastructure.DataAccess.csproj", "{90228854-ED64-4ACE-8C1F-A474C505A04E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eShopApplication.Infrastructure", "src\Infrastructure\eShopApplication.Infrastructure\eShopApplication.Infrastructure.csproj", "{714FC936-6DFC-4FDC-ABF3-07E9E502915F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopApplication.Infrastructure", "src\Infrastructure\eShopApplication.Infrastructure\eShopApplication.Infrastructure.csproj", "{714FC936-6DFC-4FDC-ABF3-07E9E502915F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eShopApplication.Application.AppData", "src\Application\eShopApplication.Application.AppData\eShopApplication.Application.AppData.csproj", "{2CB4DE37-7348-47F3-AD16-552ABFCC7CAA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopApplication.Application.AppData", "src\Application\eShopApplication.Application.AppData\eShopApplication.Application.AppData.csproj", "{2CB4DE37-7348-47F3-AD16-552ABFCC7CAA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eShopApplication.Host.DbMigrator", "src\Host\eShopApplication.Host.DbMigrator\eShopApplication.Host.DbMigrator.csproj", "{4569C3FE-0370-47C2-A9F9-C1F0055E6DA7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,6 +63,10 @@ Global
 		{2CB4DE37-7348-47F3-AD16-552ABFCC7CAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2CB4DE37-7348-47F3-AD16-552ABFCC7CAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2CB4DE37-7348-47F3-AD16-552ABFCC7CAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4569C3FE-0370-47C2-A9F9-C1F0055E6DA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4569C3FE-0370-47C2-A9F9-C1F0055E6DA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4569C3FE-0370-47C2-A9F9-C1F0055E6DA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4569C3FE-0370-47C2-A9F9-C1F0055E6DA7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -78,6 +84,7 @@ Global
 		{90228854-ED64-4ACE-8C1F-A474C505A04E} = {17AF0136-F80C-4570-BAF5-13488B5AD9B7}
 		{714FC936-6DFC-4FDC-ABF3-07E9E502915F} = {17AF0136-F80C-4570-BAF5-13488B5AD9B7}
 		{2CB4DE37-7348-47F3-AD16-552ABFCC7CAA} = {A79E4784-AA34-45D2-A3A4-E46E8D58EE34}
+		{4569C3FE-0370-47C2-A9F9-C1F0055E6DA7} = {BBD19BE2-E5F0-42FA-B61D-98F15D663C64}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C7B6917B-A1F8-4DBB-9F15-CD139F378723}
