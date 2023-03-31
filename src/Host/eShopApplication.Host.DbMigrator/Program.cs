@@ -1,10 +1,25 @@
 using eShopApplication.Host.DbMigrator;
+using Microsoft.EntityFrameworkCore;
 
-IHost host = Host.CreateDefaultBuilder(args)
-    .ConfigureServices(services =>
+namespace Board.Host.DbMigrator
+{
+    public class Program
     {
-        services.AddHostedService<Worker>();
-    })
-    .Build();
+        public static async Task Main(string[] args)
+        {
+            var host = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args).ConfigureServices((hostContext, services) =>
+            {
+                services.AddServices(hostContext.Configuration);
+            }).Build();
+            await MigrateDatabaseAsync(host.Services);
+            await host.RunAsync();
+        }
 
-await host.RunAsync();
+        private static async Task MigrateDatabaseAsync(IServiceProvider serviceProvider)
+        {
+            using var scope = serviceProvider.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<MigrationDbContext>();
+            await context.Database.MigrateAsync();
+        }
+    }
+}

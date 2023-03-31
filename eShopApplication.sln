@@ -31,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopApplication.Infrastruc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopApplication.Application.AppData", "src\Application\eShopApplication.Application.AppData\eShopApplication.Application.AppData.csproj", "{2CB4DE37-7348-47F3-AD16-552ABFCC7CAA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eShopApplication.Host.DbMigrator", "src\Host\eShopApplication.Host.DbMigrator\eShopApplication.Host.DbMigrator.csproj", "{4569C3FE-0370-47C2-A9F9-C1F0055E6DA7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopApplication.Host.DbMigrator", "src\Host\eShopApplication.Host.DbMigrator\eShopApplication.Host.DbMigrator.csproj", "{4569C3FE-0370-47C2-A9F9-C1F0055E6DA7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

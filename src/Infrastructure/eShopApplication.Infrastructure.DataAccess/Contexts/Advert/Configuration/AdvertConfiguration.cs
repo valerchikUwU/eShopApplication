@@ -15,7 +15,7 @@ namespace eShopApplication.Infrastructure.DataAccess.Contexts.Advert.Configurati
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Name).HasMaxLength(100).IsRequired();
             builder.Property(x => x.Description).HasMaxLength(2000).IsRequired();
-            builder.Property(x => x.Created).HasConversion(x => x, x => DateTime.SpecifyKind(x, DateTimeKind.Utc));
+            builder.Property(x => x.CreatedAt).HasConversion(x => x, x => DateTime.SpecifyKind(x, DateTimeKind.Utc));
         }
     }
 }

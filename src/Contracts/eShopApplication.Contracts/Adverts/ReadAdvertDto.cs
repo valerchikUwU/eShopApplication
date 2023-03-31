@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace eShopApplication.Domain.Advert
+namespace eShopApplication.Contracts.Adverts
 {
-    public class Advert
+    public class ReadAdvertDto
     {
         /// <summary>
         /// Идентификатор.
@@ -14,14 +14,13 @@ namespace eShopApplication.Domain.Advert
         public Guid Id { get; set; }
 
         /// <summary>
-        /// Наименование.
-        /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
         /// Описание.
         /// </summary>
         public string Description { get; set; }
+        /// <summary>
+        /// Наименование.
+        /// </summary>
+        public string Name { get; set; }
 
         /// <summary>
         /// Признак актуальности.
@@ -32,10 +31,5 @@ namespace eShopApplication.Domain.Advert
         /// Дата/время создания (UTC).
         /// </summary>
         public DateTime CreatedAt { get; set; }
-
-        /// <summary>
-        /// Идентификатор аккаунта.
-        /// </summary>
-        
     }
 }

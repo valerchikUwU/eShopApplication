@@ -24,6 +24,5 @@ namespace eShopApplication.Domain.Account
         
         public DateTime RegistrationDate { get; set; } = DateTime.UtcNow;
 
-        public virtual List<Domain.Advert.Advert> Adverts { get; set; }
     }
 }

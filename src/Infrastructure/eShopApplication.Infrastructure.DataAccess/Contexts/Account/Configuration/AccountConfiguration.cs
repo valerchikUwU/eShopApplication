@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace eShopApplication.Infrastructure.DataAccess.Contexts.Account.Configuration
 {
-    public class AdvertConfiguration : IEntityTypeConfiguration<Domain.Account.Account>
+    public class AccountConfiguration : IEntityTypeConfiguration<Domain.Account.Account>
     {
         public void Configure(EntityTypeBuilder<Domain.Account.Account> builder)
         {
@@ -18,8 +18,6 @@ namespace eShopApplication.Infrastructure.DataAccess.Contexts.Account.Configurat
             builder.Property(x => x.Email).HasMaxLength(2000).IsRequired();
             builder.Property(x => x.Password).IsRequired();
             builder.Property(x => x.RegistrationDate).HasConversion(x => x, x => DateTime.SpecifyKind(x, DateTimeKind.Utc));
-
-            builder.HasMany(x => x.Adverts).WithOne(x => x.Account).HasForeignKey(x => x.AccountId).IsRequired().OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

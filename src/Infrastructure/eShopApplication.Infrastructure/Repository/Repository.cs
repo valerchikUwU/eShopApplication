@@ -44,7 +44,7 @@ namespace eShopApplication.Infrastructure.Repository
         /// <inheritdoc />
         public async Task<TEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            return await DbSet.FindAsync(id);
+            return await DbSet.FindAsync(id, cancellationToken);
         }
 
         /// <inheritdoc />
@@ -56,7 +56,7 @@ namespace eShopApplication.Infrastructure.Repository
             }
 
             await DbSet.AddAsync(model);
-            await DbContext.SaveChangesAsync();
+            await DbContext.SaveChangesAsync(cancellationToken);
         }
 
         /// <inheritdoc />
@@ -68,7 +68,7 @@ namespace eShopApplication.Infrastructure.Repository
             }
 
             DbSet.Update(model);
-            await DbContext.SaveChangesAsync();
+            await DbContext.SaveChangesAsync(cancellationToken);
         }
 
         /// <inheritdoc />
