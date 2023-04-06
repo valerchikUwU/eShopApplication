@@ -1,29 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace eShopApplication.Contracts.Adverts
 {
-
     /// <summary>
-    /// Модель создания объявления
+    /// Модель обновления объявления
     /// </summary>
-    public class CreateAdvertDto
+    public class UpdateAdvertDto
     {
 
+        /// <summary>
+        /// Уникальынй идентификатор
+        /// </summary>
+        public Guid Id { get; set; }
 
+        /// <summary>
+        /// Описание.
+        /// </summary>
+        public string Description { get; set; }
         /// <summary>
         /// Наименование.
         /// </summary>
         public string Name { get; set; }
-
-        /// <summary>
-        /// Описание
-        /// </summary>
-        public string Description { get; set; }
 
         /// <summary>
         /// Цена товара
@@ -40,11 +41,10 @@ namespace eShopApplication.Contracts.Adverts
         /// </summary>
         public int Quantity { get; set; }
 
-
         /// <summary>
-        /// Флаг активности объявления 
+        /// Флаг активности
         /// </summary>
-        public bool IsActive { get; set; } = true;
+        public bool IsActive { get; set; }
 
         /// <summary>
         /// Идентификатор категории

@@ -8,11 +8,58 @@ using System.Threading.Tasks;
 
 namespace eShopApplication.Application.AppData.Adverts.Service
 {
+
+    /// <summary>
+    /// Сервис для работы с объявлениями.
+    /// </summary>
     public interface IAdvertService
     {
+
+        /// <summary>
+        /// Добавить объявления
+        /// </summary>
+        /// <param name="advert">Модель создания объявления</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>Идентификатор добавленного объявления</returns>
         Task<Guid> AddAdvertAsync(CreateAdvertDto advert, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Получить объявление по идентификатору.
+        /// </summary>
+        /// <param name="id">Идентификатор объявления.</param>
+        /// <param name="cancellationToken">Токен отмены операции.</param>
+        /// <returns>Модель объявления.</returns>
         Task<ReadAdvertDto> GetAdvertByIdAsync(Guid id, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Получить список объявления по ключевому слову
+        /// </summary>
+        /// <param name="name">Ключевое слово</param>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns>Список объявления</returns>
         Task<List<ReadAdvertDto>> GetAdvertsByNameAsync(string name, CancellationToken cancellationToken);
-        Task<List<ReadAdvertDto>> GetAllAsync(CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Получить список объявлений.
+        /// </summary>
+        /// <param name="cancellationToken">Токен отмены операции.</param>
+        /// <returns>Список объявлений.</returns>
+        Task<List<ReadAdvertDto>> GetAllAdvertsAsync(CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Обновить объявления
+        /// </summary>
+        /// <param name="updateAdvertDto">Модель обновления объявления</param>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns>Идентификатор обновленного объявления</returns>
+        Task<Guid> UpdateAdvertAsync(UpdateAdvertDto updateAdvertDto, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Удалить объявление
+        /// </summary>
+        /// <param name="id">Идентификатор объявления</param>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns></returns>
+        Task DeleteAdvertAsync(Guid id, CancellationToken cancellationToken);
     }
 }

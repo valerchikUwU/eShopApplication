@@ -26,8 +26,8 @@ namespace eShopApplication.Host.Api.Controllers
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Запрос аккаунтов");
-
-            return await Task.Run(() => Ok(Enumerable.Empty<ReadAccountDto>()), cancellationToken);
+            var result = await _accountService.GetAll(cancellationToken);
+            return StatusCode((int)HttpStatusCode.Created, result);
         }
 
 

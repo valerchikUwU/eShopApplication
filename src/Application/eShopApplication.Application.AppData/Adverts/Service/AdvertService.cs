@@ -25,9 +25,18 @@ namespace eShopApplication.Application.AppData.Adverts.Service
             {
 
                 Name = createAdvertDto.Name,
-                Description = createAdvertDto.Description
+                Description = createAdvertDto.Description,
+                CategoryId = createAdvertDto.CategoryId,
+                Cost = createAdvertDto.Cost,
+                Location = createAdvertDto.Location,
+                Quantity= createAdvertDto.Quantity,
             };
             return await _advertRepository.AddAdvertAsync(advert, cancellationToken);
+        }
+
+        public async Task DeleteAdvertAsync(Guid id, CancellationToken cancellationToken)
+        {
+            await _advertRepository.DeleteAdvertAsync(id, cancellationToken);
         }
 
         public async Task<ReadAdvertDto> GetAdvertByIdAsync(Guid id, CancellationToken cancellationToken)
@@ -39,37 +48,63 @@ namespace eShopApplication.Application.AppData.Adverts.Service
                 Description = advert.Description,
                 Name = advert.Name,
                 IsActive = advert.IsActive,
-                CreatedAt = advert.CreatedAt
+                CreatedAt = advert.CreatedAt,
+                CategoryId = advert.CategoryId,
+                Cost = advert.Cost,
+                Location = advert.Location,
+                Quantity = advert.Quantity,
             };
             return result;
         }
 
         public async Task<List<ReadAdvertDto>> GetAdvertsByNameAsync(string name, CancellationToken cancellationToken)
         {
-            var adverts = await _advertRepository.GetAllAsync(cancellationToken);
+            var adverts = await _advertRepository.GetAllAdvertsAsync(cancellationToken);
             var result = adverts.Select(s => new ReadAdvertDto
             {
                 Id = s.Id,
                 Description = s.Description,
                 Name = s.Name,
                 IsActive = s.IsActive,
-                CreatedAt = s.CreatedAt
+                CreatedAt = s.CreatedAt,
+                CategoryId = s.CategoryId,
+                Cost = s.Cost,
+                Location = s.Location,
+                Quantity = s.Quantity,
             }).Where(s => s.Name.Contains(name));
             return result.ToList();
         }
 
-        public async Task<List<ReadAdvertDto>> GetAllAsync(CancellationToken cancellationToken)
+        public async Task<List<ReadAdvertDto>> GetAllAdvertsAsync(CancellationToken cancellationToken)
         {
-            var adverts = await _advertRepository.GetAllAsync(cancellationToken);
+            var adverts = await _advertRepository.GetAllAdvertsAsync(cancellationToken);
             var result = adverts.Select(s => new ReadAdvertDto
             {
                 Id = s.Id,
                 Description = s.Description,
                 Name = s.Name,
                 IsActive = s.IsActive,
-                CreatedAt = s.CreatedAt
+                CreatedAt = s.CreatedAt,
+                CategoryId = s.CategoryId,
+                Cost = s.Cost,
+                Location = s.Location,
+                Quantity = s.Quantity,
             });
             return result.ToList();
+        }
+
+        public async Task<Guid> UpdateAdvertAsync(UpdateAdvertDto updateAdvertDto, CancellationToken cancellationToken)
+        {
+            var existingAdvert = await _advertRepository.GetAdvertByIdAsync(updateAdvertDto.Id, cancellationToken);
+            existingAdvert.Name= updateAdvertDto.Name;
+            existingAdvert.IsActive= updateAdvertDto.IsActive;
+            existingAdvert.Description= updateAdvertDto.Description;
+            existingAdvert.CategoryId = updateAdvertDto.CategoryId;
+            existingAdvert.Cost = updateAdvertDto.Cost;
+            existingAdvert.Location = updateAdvertDto.Location;
+            existingAdvert.Quantity = updateAdvertDto.Quantity; 
+
+            return await _advertRepository.UpdateAdvertAsync(existingAdvert, cancellationToken);
         }
     }
 }

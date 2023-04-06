@@ -1,4 +1,7 @@
 ﻿using eShopApplication.Application.AppData.Adverts.Repository;
+using eShopApplication.Contracts.Adverts;
+using eShopApplication.Domain.Account;
+using eShopApplication.Domain.Advert;
 using eShopApplication.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -20,6 +23,7 @@ namespace eShopApplication.Infrastructure.DataAccess.Contexts.Advert.Repository
 
         public async Task<Guid> AddAdvertAsync(Domain.Advert.Advert advert, CancellationToken cancellationToken)
         {
+            advert.CreatedAt= DateTime.Now;
             await _repository.AddAsync(advert, cancellationToken);
             return advert.Id;
         }
@@ -34,19 +38,29 @@ namespace eShopApplication.Infrastructure.DataAccess.Contexts.Advert.Repository
             return await _repository.GetAll().Where(s => s.Name.Contains(name)).ToListAsync(cancellationToken);
         }
 
-        public async Task<List<Domain.Advert.Advert>> GetAllAsync(CancellationToken cancellationToken)
+        public async Task<List<Domain.Advert.Advert>> GetAllAdvertsAsync(CancellationToken cancellationToken)
         {
             return await _repository.GetAll().ToListAsync(cancellationToken);
         }
 
-        public Task<Guid> DeleteAdvert(Guid id, CancellationToken cancellationToken)
+        public async Task DeleteAdvertAsync(Guid id, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var existingAdvert = await _repository.GetByIdAsync(id, cancellationToken);
+
+            if (existingAdvert == null)
+            {
+                return ;
+            }
+
+            await _repository.DeleteAsync(existingAdvert, cancellationToken);
         }
 
-        public Task<Domain.Advert.Advert> UpdateAdvert(Guid id, CancellationToken cancellationToken)
+        public async Task<Guid> UpdateAdvertAsync(Domain.Advert.Advert advert, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            await _repository.UpdateAsync(advert, cancellationToken);
+            return advert.Id;
         }
+
+
     }
 }

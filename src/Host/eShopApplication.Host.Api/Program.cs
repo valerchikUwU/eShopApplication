@@ -2,9 +2,12 @@ using eShopApplication.Application.AppData.Account.Services;
 using eShopApplication.Application.AppData.Accounts.Repository;
 using eShopApplication.Application.AppData.Adverts.Repository;
 using eShopApplication.Application.AppData.Adverts.Service;
+using eShopApplication.Application.AppData.Categories.Repository;
+using eShopApplication.Application.AppData.Categories.Service;
 using eShopApplication.Infrastructure.DataAccess;
 using eShopApplication.Infrastructure.DataAccess.Contexts.Account.Repositories;
 using eShopApplication.Infrastructure.DataAccess.Contexts.Advert.Repository;
+using eShopApplication.Infrastructure.DataAccess.Contexts.Category.Repositories;
 using eShopApplication.Infrastructure.DataAccess.Interfaces;
 using eShopApplication.Infrastructure.Repositories;
 using eShopApplication.Infrastructure.Repository;
@@ -26,10 +29,13 @@ builder.Services.AddScoped((Func<IServiceProvider, DbContext>)(sp => sp.GetRequi
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAdvertRepository, AdvertRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 // Add services to the container.
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IAdvertService, AdvertService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+
 
 
 builder.Services.AddControllers();

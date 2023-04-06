@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Security.Principal;
+using eShopApplication.Domain.Account;
 
 namespace eShopApplication.Application.AppData.Account.Services
 {
@@ -44,18 +45,18 @@ namespace eShopApplication.Application.AppData.Account.Services
             return result;
         }
 
-        public async Task<ReadAccountDto> GetAccountByNameAsync(string name, CancellationToken cancellationToken)
+        public async Task<List<ReadAccountDto>> GetAccountsByNameAsync(string name, CancellationToken cancellationToken)
         {
-            var account = await _repository.GetAccountByNameAsync(name, cancellationToken);
-            var result = new ReadAccountDto
+            var accounts = await _repository.GetAccountsByNameAsync(name, cancellationToken);
+            var result = accounts.Select(s => new ReadAccountDto
             {
-                Id = account.Id,
-                Name = account.Name,
-                Password = account.Password,
-                Email = account.Email,
-                RegistrationDate = account.RegistrationDate
-            };
-            return result;
+                Id = s.Id,
+                Name = s.Name,
+                Password = s.Password,
+                Email = s.Email,
+                RegistrationDate = s.RegistrationDate
+            });
+            return result.ToList();
         }
 
         public async Task<List<ReadAccountDto>> GetAll(CancellationToken cancellationToken)
@@ -72,12 +73,12 @@ namespace eShopApplication.Application.AppData.Account.Services
             return result.ToList();
         }
 
-        public Task DeleteAccountAsync(Domain.Account.Account model, CancellationToken cancellationToken)
+        Task<Guid> IAccountService.DeleteAccountAsync(CreateAccountDto createAccountDto, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public Task UpdateAccountAsync(Domain.Account.Account model, CancellationToken cancellationToken)
+        Task<Guid> IAccountService.UpdateAccountAsync(CreateAccountDto createAccountDto, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

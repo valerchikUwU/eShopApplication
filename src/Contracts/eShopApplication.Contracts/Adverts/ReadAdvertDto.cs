@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace eShopApplication.Contracts.Adverts
 {
+
+    /// <summary>
+    /// Модель объявления
+    /// </summary>
     public class ReadAdvertDto
     {
         /// <summary>
@@ -23,9 +27,29 @@ namespace eShopApplication.Contracts.Adverts
         public string Name { get; set; }
 
         /// <summary>
-        /// Признак актуальности.
+        /// Флаг активности
         /// </summary>
         public bool IsActive { get; set; }
+
+        /// <summary>
+        /// Цена товара
+        /// </summary>
+        public decimal Cost { get; set; }
+
+        /// <summary>
+        /// Локация продавца
+        /// </summary>
+        public string Location { get; set; }
+
+        /// <summary>
+        /// Кол-во экземпляров
+        /// </summary>
+        public int Quantity { get; set; }
+
+        /// <summary>
+        /// Идентификатор категории
+        /// </summary>
+        public Guid CategoryId { get; set; }
 
         /// <summary>
         /// Дата/время создания (UTC).

@@ -80,12 +80,8 @@ namespace eShopApplication.Infrastructure.Repository
             }
 
             DbSet.Remove(model);
-            await DbContext.SaveChangesAsync();
+            await DbContext.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<TEntity> GetByNameAsync(string name, CancellationToken cancellationToken)
-        {
-            return await DbSet.FindAsync(name);
-        }
     }
 }

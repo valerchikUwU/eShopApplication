@@ -1,5 +1,6 @@
 ﻿using eShopApplication.Application.AppData.Accounts.Repository;
 using eShopApplication.Contracts.Accounts;
+using eShopApplication.Domain.Account;
 using eShopApplication.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -24,9 +25,10 @@ namespace eShopApplication.Infrastructure.DataAccess.Contexts.Account.Repositori
             return account.Id;
         }
 
-        public Task<Guid> DeleteAccount(Guid id, CancellationToken cancellationToken)
+        public async Task<Guid> DeleteAccount(Domain.Account.Account account, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            await _repository.DeleteAsync(account, cancellationToken);
+            return account.Id;
         }
 
         public async Task<Domain.Account.Account> GetAccountByIdAsync(Guid id, CancellationToken cancellationToken)
@@ -34,9 +36,9 @@ namespace eShopApplication.Infrastructure.DataAccess.Contexts.Account.Repositori
              return await _repository.GetByIdAsync(id, cancellationToken);
         }
 
-        public async Task<Domain.Account.Account> GetAccountByNameAsync(string name, CancellationToken cancellationToken)
+        public async Task<List<Domain.Account.Account>> GetAccountsByNameAsync(string name, CancellationToken cancellationToken)
         {
-            return await _repository.GetByNameAsync(name, cancellationToken);
+            return await _repository.GetAll().Where(s => s.Name.Contains(name)).ToListAsync(cancellationToken);
         }
 
         public async Task<List<Domain.Account.Account>> GetAllAsync(CancellationToken cancellationToken)
@@ -44,9 +46,10 @@ namespace eShopApplication.Infrastructure.DataAccess.Contexts.Account.Repositori
             return await _repository.GetAll().ToListAsync(cancellationToken);
         }
 
-        public Task<Domain.Account.Account> UpdateAccount(Guid id, CancellationToken cancellationToken)
+        public async Task<Guid> UpdateAccount(Domain.Account.Account account, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            await _repository.UpdateAsync(account, cancellationToken);
+            return account.Id;
         }
     }
 }
