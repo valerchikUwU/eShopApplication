@@ -31,24 +31,26 @@ namespace eShopApplication.Infrastructure.Repositories
         /// </summary>
         /// <param name="id">Идентификатор <see cref="TEntity"/>.</param>
         /// <returns><see cref="TEntity"/>.</returns>
-        Task<TEntity> GetByIdAsync(Guid id);
+        Task<TEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+
+        
 
         /// <summary>
         /// Добавляет элемент <see cref="TEntity"/>.
         /// </summary>
         /// <param name="model">Новая сущность <see cref="TEntity"/>.</param>
-        Task AddAsync(TEntity model);
+        Task AddAsync(TEntity model, CancellationToken cancellationToken);
 
         /// <summary>
         /// Обновляет элемент <see cref="TEntity"/>.
         /// </summary>
         /// <param name="model">Существующая сущность <see cref="TEntity"/>.</param>
-        Task UpdateAsync(TEntity model);
+        Task UpdateAsync(TEntity model, CancellationToken cancellationToken);
 
         /// <summary>
         /// Удаляет элемент <see cref="TEntity"/>.
         /// </summary>
         /// <param name="model">Существующая сущность <see cref="TEntity"/>.</param>
-        Task DeleteAsync(TEntity model);
+        Task DeleteAsync(TEntity model, CancellationToken cancellationToken);
     }
 }
