@@ -97,12 +97,12 @@ namespace eShopApplication.Application.AppData.Adverts.Service
         {
             var existingAdvert = await _advertRepository.GetAdvertByIdAsync(updateAdvertDto.Id, cancellationToken);
             existingAdvert.Name= updateAdvertDto.Name;
-            existingAdvert.IsActive= updateAdvertDto.IsActive;
-            existingAdvert.Description= updateAdvertDto.Description;
+            existingAdvert.Description = updateAdvertDto.Description;
             existingAdvert.CategoryId = updateAdvertDto.CategoryId;
             existingAdvert.Cost = updateAdvertDto.Cost;
             existingAdvert.Location = updateAdvertDto.Location;
-            existingAdvert.Quantity = updateAdvertDto.Quantity; 
+            existingAdvert.Quantity = updateAdvertDto.Quantity;
+            existingAdvert.IsActive = updateAdvertDto.IsActive;
 
             return await _advertRepository.UpdateAdvertAsync(existingAdvert, cancellationToken);
         }
