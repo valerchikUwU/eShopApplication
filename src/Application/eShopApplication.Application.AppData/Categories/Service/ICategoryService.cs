@@ -36,7 +36,7 @@ namespace eShopApplication.Application.AppData.Categories.Service
         /// <param name="name">Ключевое слово</param>
         /// <param name="cancellationToken">Токен отмены</param>
         /// <returns>Список категорий</returns>
-        Task<List<ReadCategoryDto>> GetCategoryByNameAsync(string name, CancellationToken cancellationToken);
+        Task<List<ReadCategoryDto>> GetCategoriesByNameAsync(string name, CancellationToken cancellationToken);
 
         /// <summary>
         /// Получить все категории

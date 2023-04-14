@@ -81,8 +81,8 @@ namespace eShopApplication.Application.AppData.Adverts.Service
             var result = adverts.Select(s => new ReadAdvertDto
             {
                 Id = s.Id,
-                Description = s.Description,
                 Name = s.Name,
+                Description = s.Description,
                 IsActive = s.IsActive,
                 CreatedAt = s.CreatedAt,
                 CategoryId = s.CategoryId,

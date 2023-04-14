@@ -6,7 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace eShopApplication.Infrastructure.DataAccess.Contexts.Account.Repositories
@@ -19,37 +21,27 @@ namespace eShopApplication.Infrastructure.DataAccess.Contexts.Account.Repositori
         {
             _repository = repository;
         }
-        public async Task<Guid> AddAccountAsync(Domain.Account.Account account, CancellationToken cancellationToken)
+        /// <inheritdoc/>
+        public async Task<Guid> AddAsync(Domain.Account.Account model, CancellationToken cancellation)
         {
-            await _repository.AddAsync(account, cancellationToken);
-            return account.Id;
+            await _repository.AddAsync(model, cancellation);
+            return model.Id;
         }
 
-        public async Task<Guid> DeleteAccount(Domain.Account.Account account, CancellationToken cancellationToken)
+        /// <inheritdoc/>
+        public Task<Domain.Account.Account> FindById(Guid id, CancellationToken cancellation)
         {
-            await _repository.DeleteAsync(account, cancellationToken);
-            return account.Id;
+            return _repository.GetByIdAsync(id, cancellation);
         }
 
-        public async Task<Domain.Account.Account> GetAccountByIdAsync(Guid id, CancellationToken cancellationToken)
+        /// <inheritdoc/>
+        public async Task<Domain.Account.Account> FindWhere(Expression<Func<Domain.Account.Account, bool>> predicate, CancellationToken cancellation)
         {
-             return await _repository.GetByIdAsync(id, cancellationToken);
-        }
+            var data = _repository.GetAllFiltered(predicate);
 
-        public async Task<List<Domain.Account.Account>> GetAccountsByNameAsync(string name, CancellationToken cancellationToken)
-        {
-            return await _repository.GetAll().Where(s => s.Name.Contains(name)).ToListAsync(cancellationToken);
-        }
+            Domain.Account.Account account = await data.Where(predicate).FirstOrDefaultAsync(cancellation);
 
-        public async Task<List<Domain.Account.Account>> GetAllAsync(CancellationToken cancellationToken)
-        {
-            return await _repository.GetAll().ToListAsync(cancellationToken);
-        }
-
-        public async Task<Guid> UpdateAccount(Domain.Account.Account account, CancellationToken cancellationToken)
-        {
-            await _repository.UpdateAsync(account, cancellationToken);
-            return account.Id;
+            return account;
         }
     }
 }

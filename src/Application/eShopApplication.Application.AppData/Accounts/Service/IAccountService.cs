@@ -12,13 +12,28 @@ namespace eShopApplication.Application.AppData.Account.Services
     /// </summary>
     public interface IAccountService
     {
-        ///
-        Task<Guid> CreateAccountAsync(CreateAccountDto createAccountDto, CancellationToken cancellation);
-        Task<ReadAccountDto> GetAccountByIdAsync(Guid id, CancellationToken cancellationToken);
-        Task<List<ReadAccountDto>> GetAccountsByNameAsync(string name, CancellationToken cancellationToken);
-        Task<List<ReadAccountDto>> GetAll(CancellationToken cancellationToken);
-        Task<Guid> DeleteAccountAsync(CreateAccountDto createAccountDto, CancellationToken cancellationToken);
-        Task<Guid> UpdateAccountAsync(CreateAccountDto createAccountDto, CancellationToken cancellationToken);
+        /// <summary>
+        /// Регистрация пользователя.
+        /// </summary>
+        /// <param name="createAccountDto">Модель для регистрации.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        /// <returns>Идентификатор пользователя.</returns>
+        Task<Guid> RegisterAccountAsync(CreateAccountDto createAccountDto, CancellationToken cancellation);
+
+        /// <summary>
+        /// Авторизация пользователя.
+        /// </summary>
+        /// <param name="loginAccountDto">Модель для логина.</param>
+        /// <param name="cancellation">Токен отмены.</param>
+        /// <returns>Токен.</returns>
+        Task<string> LoginAsync(LoginAccountDto loginAccountDto, CancellationToken cancellation);
+
+        /// <summary>
+        /// Получение текущего пользователя.
+        /// </summary>
+        /// <param name="cancellation">Токен отмены.</param>
+        /// <returns>Текущий пользователь.</returns>
+        Task<ReadAccountDto> GetCurrentAsync(CancellationToken cancellation);
 
     }
 }

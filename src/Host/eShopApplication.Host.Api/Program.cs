@@ -4,6 +4,7 @@ using eShopApplication.Application.AppData.Adverts.Repository;
 using eShopApplication.Application.AppData.Adverts.Service;
 using eShopApplication.Application.AppData.Categories.Repository;
 using eShopApplication.Application.AppData.Categories.Service;
+using eShopApplication.Contracts.Adverts;
 using eShopApplication.Infrastructure.DataAccess;
 using eShopApplication.Infrastructure.DataAccess.Contexts.Account.Repositories;
 using eShopApplication.Infrastructure.DataAccess.Contexts.Advert.Repository;
@@ -11,7 +12,12 @@ using eShopApplication.Infrastructure.DataAccess.Contexts.Category.Repositories;
 using eShopApplication.Infrastructure.DataAccess.Interfaces;
 using eShopApplication.Infrastructure.Repositories;
 using eShopApplication.Infrastructure.Repository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +30,12 @@ builder.Services.AddDbContext<eShopApplicationDbContext>((Action<IServiceProvide
         .Configure((DbContextOptionsBuilder<eShopApplicationDbContext>)dbOptions)));
 
 builder.Services.AddScoped((Func<IServiceProvider, DbContext>)(sp => sp.GetRequiredService<eShopApplicationDbContext>()));
+
+
+
+builder.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+
 
 // Add repositories to the container.
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
@@ -38,9 +50,62 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 
 
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    var sectetKey = builder.Configuration["Jwt:Key"];
+
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateActor = false,
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateIssuerSigningKey = true,
+        ValidateLifetime = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(sectetKey))
+    };
+});
+
+builder.Services.AddAuthorization();
+
+
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = @"JWT Authorization header using the Bearer scheme.  
+                        Enter 'Bearer' [space] and then your token in the text input below.
+                        Example: 'Bearer secretKey'",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = JwtBearerDefaults.AuthenticationScheme
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+                Scheme = "oauth2",
+                Name = "Bearer",
+                In = ParameterLocation.Header,
+            },
+            new List<string>()
+        }
+    });
+});
 
 var app = builder.Build();
 
@@ -53,6 +118,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();    
 app.UseAuthorization();
 
 app.MapControllers();

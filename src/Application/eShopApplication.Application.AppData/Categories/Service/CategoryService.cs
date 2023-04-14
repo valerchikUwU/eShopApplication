@@ -56,7 +56,7 @@ namespace eShopApplication.Application.AppData.Categories.Service
             return result;
         }
 
-        public async Task<List<ReadCategoryDto>> GetCategoryByNameAsync(string name, CancellationToken cancellationToken)
+        public async Task<List<ReadCategoryDto>> GetCategoriesByNameAsync(string name, CancellationToken cancellationToken)
         {
             var categories = await _categoryRepository.GetAllCategoriesAsync(cancellationToken);
             var result = categories.Select(s => new ReadCategoryDto

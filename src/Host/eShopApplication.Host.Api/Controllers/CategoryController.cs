@@ -2,6 +2,7 @@
 using eShopApplication.Application.AppData.Categories.Service;
 using eShopApplication.Contracts.Adverts;
 using eShopApplication.Contracts.Categories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -76,11 +77,11 @@ namespace eShopApplication.Host.Api.Controllers
 
 
         [HttpGet("by_name")]
-        [ProducesResponseType(typeof(IEnumerable<ReadAdvertDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAllAdvertsByNameAsync(string name, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(IEnumerable<ReadCategoryDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllCategoriesByNameAsync(string name, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Запрос всех категорий по ключевому полю: {name}");
-            var result = await _categoryService.GetCategoryByNameAsync(name, cancellationToken);
+            var result = await _categoryService.GetCategoriesByNameAsync(name, cancellationToken);
             return StatusCode((int)HttpStatusCode.Created, result);
         }
     }

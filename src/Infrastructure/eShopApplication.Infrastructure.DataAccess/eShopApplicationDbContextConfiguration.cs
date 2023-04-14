@@ -32,7 +32,6 @@ namespace eShopApplication.Infrastructure.DataAccess
                 throw new InvalidOperationException(
                     $"Не найдена строка подключения с именем '{MSSQLConnectionStringName}'");
             }
-            Console.WriteLine(connectionString);
             options.UseSqlServer(connectionString);
             options.UseLoggerFactory(_loggerFactory);
         }

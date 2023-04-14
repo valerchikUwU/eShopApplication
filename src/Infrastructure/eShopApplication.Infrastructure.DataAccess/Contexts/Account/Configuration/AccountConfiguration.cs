@@ -13,11 +13,13 @@ namespace eShopApplication.Infrastructure.DataAccess.Contexts.Account.Configurat
     {
         public void Configure(EntityTypeBuilder<Domain.Account.Account> builder)
         {
-            builder.HasKey(x => x.Id);
-            builder.Property(x => x.Name).HasMaxLength(100).IsRequired();
-            builder.Property(x => x.Email).HasMaxLength(2000).IsRequired();
-            builder.Property(x => x.Password).IsRequired();
-            builder.Property(x => x.RegistrationDate).HasConversion(x => x, x => DateTime.SpecifyKind(x, DateTimeKind.Utc));
+            builder.HasKey(a => a.Id);
+            builder.Property(a => a.Name).HasMaxLength(256).IsRequired();
+            builder.Property(a => a.LastName).HasMaxLength(256).IsRequired();
+            builder.Property(a => a.NickName).HasMaxLength(256).IsRequired();
+            builder.Property(a => a.Login).HasMaxLength(50).IsRequired();
+            builder.Property(a => a.Password).HasMaxLength(50).IsRequired();
+            builder.Property(a => a.RegistrationDate).HasConversion(s => s, s => DateTime.SpecifyKind(s, DateTimeKind.Utc));
         }
     }
 }

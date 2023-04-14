@@ -1,5 +1,6 @@
 ﻿using eShopApplication.Application.AppData.Adverts.Service;
 using eShopApplication.Contracts.Adverts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net;
@@ -39,6 +40,7 @@ namespace eShopApplication.Host.Api.Controllers
         /// <returns>Список моделей объявлений.</returns>
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<ReadAdvertDto>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Запрос всех постов");
@@ -54,6 +56,7 @@ namespace eShopApplication.Host.Api.Controllers
         /// <returns>Идентификатор созданного объвления</returns>
         [HttpPost]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
+        [Authorize]
         public async Task<IActionResult> Create([FromBody] CreateAdvertDto createAdvertDto, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Запрос на создание объявления: {JsonConvert.SerializeObject(createAdvertDto)}");
@@ -70,6 +73,7 @@ namespace eShopApplication.Host.Api.Controllers
         /// <returns>Идентификатор обновленного объявления</returns>
         [HttpPut]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+        [Authorize]
         public async Task<IActionResult> Update([FromBody] UpdateAdvertDto updateAdvertDto, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Запрос на обновление объявления на: {JsonConvert.SerializeObject(updateAdvertDto)}");
@@ -87,6 +91,7 @@ namespace eShopApplication.Host.Api.Controllers
         /// <returns></returns>
         [HttpDelete]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+        [Authorize]
         public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
         {
 
@@ -104,6 +109,7 @@ namespace eShopApplication.Host.Api.Controllers
         /// <param name="cancellationToken">Токен отмены.</param>
         /// <returns>Модель объявления</returns>
         [HttpGet("{id:Guid}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Запрос объявления по идентификатору: {id}");
@@ -126,6 +132,7 @@ namespace eShopApplication.Host.Api.Controllers
         /// <returns>Список объвлений</returns>
         [HttpGet("by_name")]
         [ProducesResponseType(typeof(IEnumerable<ReadAdvertDto>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllAdvertsByNameAsync(string name, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Запрос всех постов по ключевому полю: {name}");

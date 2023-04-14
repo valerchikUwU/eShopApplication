@@ -15,14 +15,26 @@ namespace eShopApplication.Domain.Account
         public Guid Id { get; set; }
 
         /// <summary>
-        /// Ник пользователя
+        /// Имя пользователя
         /// </summary>
         public string Name { get; set; }
 
         /// <summary>
-        /// Почта пользователя
+        /// Фамилия пользователя
         /// </summary>
-        public string Email { get; set; }
+        public string LastName { get; set; }
+
+        /// <summary>
+        /// Логин пользователя
+        /// </summary>
+        public string Login { get; set; }
+
+        public string NickName { get; set; }
+
+        /// <summary>
+        /// Номер телефона пользователя
+        /// </summary>
+        public string PhoneNumber { get; set; }
 
         /// <summary>
         /// Пароль пользователя

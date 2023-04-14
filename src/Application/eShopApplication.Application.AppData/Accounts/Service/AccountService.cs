@@ -9,78 +9,122 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Security.Principal;
 using eShopApplication.Domain.Account;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
 
 namespace eShopApplication.Application.AppData.Account.Services
 {
     public class AccountService : IAccountService
     {
-        private readonly IAccountRepository _repository;
+        private readonly IAccountRepository _accountRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IConfiguration _сonfiguration;
 
-        public AccountService (IAccountRepository repository)
+        public AccountService(
+        IAccountRepository accountRepository,
+        IHttpContextAccessor httpContextAccesso,
+        IConfiguration сonfiguration)
         {
-            _repository = repository;
+            _accountRepository = accountRepository;
+            _httpContextAccessor = httpContextAccesso;
+            _сonfiguration = сonfiguration;
         }
-        public async Task<Guid> CreateAccountAsync(CreateAccountDto createAccountDto, CancellationToken cancellation)
+        public async Task<Guid> RegisterAccountAsync(CreateAccountDto accountDto, CancellationToken cancellation)
         {
             var account = new Domain.Account.Account
             {
-                Name = createAccountDto.Name,
-                Password = createAccountDto.Password,
-                Email = createAccountDto.Email
+                Name = accountDto.Login,
+                LastName = accountDto.LastName,
+                PhoneNumber = accountDto.PhoneNumber,
+                NickName = accountDto.NickName,
+                Login = accountDto.Login,
+                Password = accountDto.Password,
+                RegistrationDate = DateTime.UtcNow
             };
-            return await _repository.AddAccountAsync(account, cancellation);
+
+            var existingAccount = await _accountRepository.FindWhere(account => account.Login == accountDto.Login, cancellation);
+            if (existingAccount != null)
+            {
+                throw new Exception($"Пользователь с логином '{accountDto.Login}' уже зарегистрирован!");
+            }
+
+            await _accountRepository.AddAsync(account, cancellation);
+
+            return account.Id;
         }
 
-        public async Task<ReadAccountDto> GetAccountByIdAsync(Guid id, CancellationToken cancellationToken)
+        /// <inheritdoc />
+        public async Task<string> LoginAsync(LoginAccountDto accountDto, CancellationToken cancellation)
         {
-            var account = await _repository.GetAccountByIdAsync(id, cancellationToken);
-            var result = new ReadAccountDto
+            var existingAccount = await _accountRepository.FindWhere(account => account.Login == accountDto.Login, cancellation);
+            if (existingAccount == null)
             {
-                Id = account.Id,
-                Name = account.Name,
-                Password = account.Password,
-                Email = account.Email,
-                RegistrationDate = account.RegistrationDate
-            };
+                throw new Exception("Пользователь не найден!");
+            }
+
+            if (!existingAccount.Password.Equals(accountDto.Password))
+            {
+                throw new Exception("Неверный логин или пароль.");
+            }
+
+            var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, existingAccount.Id.ToString()),
+            new Claim(ClaimTypes.Name, existingAccount.Login)
+        };
+
+            var secretKey = _сonfiguration["Jwt:Key"];
+
+            var token = new JwtSecurityToken
+                (
+                claims: claims,
+                expires: DateTime.UtcNow.AddDays(1),
+                notBefore: DateTime.UtcNow,
+                signingCredentials: new SigningCredentials(
+                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+                    SecurityAlgorithms.HmacSha256
+                    )
+                );
+
+            var result = new JwtSecurityTokenHandler().WriteToken(token);
+
             return result;
         }
 
-        public async Task<List<ReadAccountDto>> GetAccountsByNameAsync(string name, CancellationToken cancellationToken)
+        /// <inheritdoc />
+        public async Task<ReadAccountDto> GetCurrentAsync(CancellationToken cancellation)
         {
-            var accounts = await _repository.GetAccountsByNameAsync(name, cancellationToken);
-            var result = accounts.Select(s => new ReadAccountDto
+            var claims = _httpContextAccessor.HttpContext.User.Claims;
+            var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrWhiteSpace(claimId))
             {
-                Id = s.Id,
-                Name = s.Name,
-                Password = s.Password,
-                Email = s.Email,
-                RegistrationDate = s.RegistrationDate
-            });
-            return result.ToList();
-        }
+                return null;
+            }
 
-        public async Task<List<ReadAccountDto>> GetAll(CancellationToken cancellationToken)
-        {
-            var accounts = await _repository.GetAllAsync(cancellationToken);
-            var result = accounts.Select(s => new ReadAccountDto
+            var id = Guid.Parse(claimId);
+            var user = await _accountRepository.FindById(id, cancellation);
+
+            if (user == null)
             {
-                Id = s.Id,
-                Name = s.Name,
-                Password = s.Password,
-                Email = s.Email,
-                RegistrationDate = s.RegistrationDate
-            });
-            return result.ToList();
-        }
+                throw new Exception($"Не найден пользователь с идентификатором '{id}'.");
+            }
 
-        Task<Guid> IAccountService.DeleteAccountAsync(CreateAccountDto createAccountDto, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
+            //TODO
+            var result = new ReadAccountDto
+            {
+                Name = user.Login,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                NickName = user.NickName,
+                Login = user.Login,
+                RegistrationDate = DateTime.UtcNow
+            };
 
-        Task<Guid> IAccountService.UpdateAccountAsync(CreateAccountDto createAccountDto, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
+            return result;
         }
     }
 }
