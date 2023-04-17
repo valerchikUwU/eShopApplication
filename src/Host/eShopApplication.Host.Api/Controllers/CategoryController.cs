@@ -11,6 +11,7 @@ namespace eShopApplication.Host.Api.Controllers
     [ApiController]
     [Route("[controller]")]
     [Produces("application/json")]
+    [Authorize(Policy = "AdminPolicy")]
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;

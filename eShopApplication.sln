@@ -17,8 +17,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{194CD761-1577-4520-9708-0507584DDF91}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NewFolder1", "NewFolder1", "{CF473169-E1C8-4469-A224-4DD84FCD1DB9}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopApplication.Host.Api", "src\Host\eShopApplication.Host.Api\eShopApplication.Host.Api.csproj", "{20ACDFA4-4525-4CD7-B2A6-D5F0F70DFF1E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopApplication.Contracts", "src\Contracts\eShopApplication.Contracts\eShopApplication.Contracts.csproj", "{571E2BBA-FA18-458C-8B19-6750AD13D1CD}"

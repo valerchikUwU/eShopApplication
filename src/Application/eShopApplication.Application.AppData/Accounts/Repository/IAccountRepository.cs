@@ -27,8 +27,10 @@ namespace eShopApplication.Application.AppData.Accounts.Repository
         /// <summary>
         /// Добавление пользователя.
         /// </summary>
-        /// <param name="entity">Пользователь.</param>
+        /// <param name="account">Пользователь.</param>
         /// <returns></returns>
-        Task<Guid> AddAsync(Domain.Account.Account entity, CancellationToken cancellation);
+        Task<Guid> AddAsync(Domain.Account.Account account, CancellationToken cancellation);
+
+        Task<Guid> UpdateAccountAsync(Domain.Account.Account account, CancellationToken cancellation);
     }
 }

@@ -32,34 +32,36 @@ namespace eShopApplication.Application.AppData.Account.Services
             _httpContextAccessor = httpContextAccesso;
             _сonfiguration = сonfiguration;
         }
-        public async Task<Guid> RegisterAccountAsync(CreateAccountDto accountDto, CancellationToken cancellation)
+        public async Task<Guid> RegisterAccountAsync(CreateAccountDto accountDto, CancellationToken cancellationToken)
         {
             var account = new Domain.Account.Account
             {
                 Name = accountDto.Login,
                 LastName = accountDto.LastName,
-                PhoneNumber = accountDto.PhoneNumber,
                 NickName = accountDto.NickName,
+                PhoneNumber = accountDto.PhoneNumber,
                 Login = accountDto.Login,
                 Password = accountDto.Password,
-                RegistrationDate = DateTime.UtcNow
+                RegistrationDate = DateTime.UtcNow,
+                AccountRoleName = "User",
+                AccountRoleId = Guid.Parse("1cc4dad8-6318-4519-bb02-08db3f35bbdf")
             };
 
-            var existingAccount = await _accountRepository.FindWhere(account => account.Login == accountDto.Login, cancellation);
+            var existingAccount = await _accountRepository.FindWhere(account => account.Login == accountDto.Login, cancellationToken);
             if (existingAccount != null)
             {
                 throw new Exception($"Пользователь с логином '{accountDto.Login}' уже зарегистрирован!");
             }
 
-            await _accountRepository.AddAsync(account, cancellation);
+            await _accountRepository.AddAsync(account, cancellationToken);
 
             return account.Id;
         }
 
         /// <inheritdoc />
-        public async Task<string> LoginAsync(LoginAccountDto accountDto, CancellationToken cancellation)
+        public async Task<string> LoginAsync(LoginAccountDto accountDto, CancellationToken cancellationToken)
         {
-            var existingAccount = await _accountRepository.FindWhere(account => account.Login == accountDto.Login, cancellation);
+            var existingAccount = await _accountRepository.FindWhere(account => account.Login == accountDto.Login, cancellationToken);
             if (existingAccount == null)
             {
                 throw new Exception("Пользователь не найден!");
@@ -71,10 +73,11 @@ namespace eShopApplication.Application.AppData.Account.Services
             }
 
             var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.NameIdentifier, existingAccount.Id.ToString()),
-            new Claim(ClaimTypes.Name, existingAccount.Login)
-        };
+            {
+                new Claim(ClaimTypes.NameIdentifier, existingAccount.Id.ToString()),
+                new Claim(ClaimTypes.Name, existingAccount.Login),
+                new Claim(ClaimTypes.Role, existingAccount.AccountRoleName)
+            };
 
             var secretKey = _сonfiguration["Jwt:Key"];
 
@@ -95,7 +98,7 @@ namespace eShopApplication.Application.AppData.Account.Services
         }
 
         /// <inheritdoc />
-        public async Task<ReadAccountDto> GetCurrentAsync(CancellationToken cancellation)
+        public async Task<ReadAccountDto> GetCurrentAsync(CancellationToken cancellationToken)
         {
             var claims = _httpContextAccessor.HttpContext.User.Claims;
             var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
@@ -106,25 +109,52 @@ namespace eShopApplication.Application.AppData.Account.Services
             }
 
             var id = Guid.Parse(claimId);
-            var user = await _accountRepository.FindById(id, cancellation);
+            var user = await _accountRepository.FindById(id, cancellationToken);
+
+            if (user == null)
+            {
+                throw new Exception($"Не найден пользователь с идентификатором '{id}'.");
+            }
+            //TODO
+            var result = new ReadAccountDto
+            {
+                Name = user.Name,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                NickName = user.NickName,
+                Login = user.Login,
+                RegistrationDate = DateTime.UtcNow,
+            };
+
+            return result;
+        }
+
+        public async Task<Guid> UpdateAccountAsync(CreateAccountDto createAccountDto, CancellationToken cancellationToken)
+        {
+            var claims = _httpContextAccessor.HttpContext.User.Claims;
+            var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrWhiteSpace(claimId))
+            {
+                return Guid.Empty;
+            }
+
+            var id = Guid.Parse(claimId);
+            var user = await _accountRepository.FindById(id, cancellationToken);
 
             if (user == null)
             {
                 throw new Exception($"Не найден пользователь с идентификатором '{id}'.");
             }
 
-            //TODO
-            var result = new ReadAccountDto
-            {
-                Name = user.Login,
-                LastName = user.LastName,
-                PhoneNumber = user.PhoneNumber,
-                NickName = user.NickName,
-                Login = user.Login,
-                RegistrationDate = DateTime.UtcNow
-            };
+            user.Name = createAccountDto.Name;
+            user.LastName = createAccountDto.LastName;
+            user.PhoneNumber = createAccountDto.PhoneNumber;
+            user.NickName = createAccountDto.NickName;
+            user.Login = createAccountDto.Login;
+            user.Password = createAccountDto.Password;
 
-            return result;
+            return await _accountRepository.UpdateAccountAsync(user, cancellationToken);
         }
     }
 }

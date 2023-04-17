@@ -23,4 +23,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Infrastructure\eShopApplication.Infrastructure.DataAccess\eShopApplication.Infrastructure.DataAccess.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
 </Project>

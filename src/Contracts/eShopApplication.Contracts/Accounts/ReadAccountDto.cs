@@ -31,5 +31,7 @@ namespace eShopApplication.Contracts.Accounts
         /// </summary>
         public bool IsBlocked { get; set; }
 
+        public List<Claim> Claims { get; set; } = new List<Claim>();
+
     }
 }

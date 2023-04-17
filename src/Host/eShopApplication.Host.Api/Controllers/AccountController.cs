@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using Newtonsoft.Json;
 
 namespace eShopApplication.Host.Api.Controllers
 {
@@ -86,12 +87,15 @@ namespace eShopApplication.Host.Api.Controllers
 
             return result;
 
-            //    new AccountDto
-            //{
-            //    Scheme = HttpContext.User.Identity.AuthenticationType,
-            //    IsAuthenticated = HttpContext.User.Identity.IsAuthenticated,
-            //    Claims = HttpContext.User.Claims.ToList()
-            //};
+        }
+
+        [HttpPut("UpdateCurrentAccount")]
+        public async Task<IActionResult> UpdateAccountAsync([FromBody] CreateAccountDto createAccountDto, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation($"Запрос на обновление аккаунта на: {JsonConvert.SerializeObject(createAccountDto)}");
+            await _accountService.UpdateAccountAsync(createAccountDto, cancellationToken);
+
+            return StatusCode((int)HttpStatusCode.OK, createAccountDto);
         }
     }
 }

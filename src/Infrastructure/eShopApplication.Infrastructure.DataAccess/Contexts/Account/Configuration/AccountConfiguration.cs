@@ -20,6 +20,15 @@ namespace eShopApplication.Infrastructure.DataAccess.Contexts.Account.Configurat
             builder.Property(a => a.Login).HasMaxLength(50).IsRequired();
             builder.Property(a => a.Password).HasMaxLength(50).IsRequired();
             builder.Property(a => a.RegistrationDate).HasConversion(s => s, s => DateTime.SpecifyKind(s, DateTimeKind.Utc));
+            builder.Property(a => a.AccountRoleId);
+            builder.Property(a => a.AccountRoleName);
+
+            builder.HasOne(a => a.AccountRole)
+                .WithMany(ar => ar.Accounts)
+                .HasForeignKey(a => a.AccountRoleId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
+           
         }
     }
 }

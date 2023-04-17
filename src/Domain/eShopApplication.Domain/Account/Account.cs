@@ -46,6 +46,11 @@ namespace eShopApplication.Domain.Account
         /// </summary>
         public DateTime RegistrationDate { get; set; } = DateTime.UtcNow;
 
+        public Guid AccountRoleId { get; set; }
+        public string AccountRoleName { get; set; }
+
+        public virtual Domain.AccountRole.AccountRole AccountRole { get; set; }
+
         //public virtual List<Domain.Advert.Advert> Adverts { get; set; }
     }
 }

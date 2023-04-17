@@ -43,5 +43,11 @@ namespace eShopApplication.Infrastructure.DataAccess.Contexts.Account.Repositori
 
             return account;
         }
+
+        public async Task<Guid> UpdateAccountAsync(Domain.Account.Account account, CancellationToken cancellation)
+        {
+            await _repository.UpdateAsync(account, cancellation);
+            return account.Id;
+        }
     }
 }

@@ -28,9 +28,17 @@ namespace eShopApplication.Host.DbMigrator.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("LastName")
+                    b.Property<Guid>("AccountRoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AccountRoleName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("Login")
                         .IsRequired()
@@ -44,7 +52,8 @@ namespace eShopApplication.Host.DbMigrator.Migrations
 
                     b.Property<string>("NickName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -60,7 +69,29 @@ namespace eShopApplication.Host.DbMigrator.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Account");
+                    b.HasIndex("AccountRoleId");
+
+                    b.ToTable("Account", (string)null);
+                });
+
+            modelBuilder.Entity("eShopApplication.Domain.AccountRole.AccountRole", b =>
+                {
+                    b.Property<Guid>("AccountRoleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AccountRoleDescription")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("AccountRoleName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("AccountRoleId");
+
+                    b.ToTable("AccountRole", (string)null);
                 });
 
             modelBuilder.Entity("eShopApplication.Domain.Advert.Advert", b =>
@@ -104,7 +135,7 @@ namespace eShopApplication.Host.DbMigrator.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Advert");
+                    b.ToTable("Advert", (string)null);
                 });
 
             modelBuilder.Entity("eShopApplication.Domain.Category.Category", b =>
@@ -123,7 +154,18 @@ namespace eShopApplication.Host.DbMigrator.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Category");
+                    b.ToTable("Category", (string)null);
+                });
+
+            modelBuilder.Entity("eShopApplication.Domain.Account.Account", b =>
+                {
+                    b.HasOne("eShopApplication.Domain.AccountRole.AccountRole", "AccountRole")
+                        .WithMany("Accounts")
+                        .HasForeignKey("AccountRoleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AccountRole");
                 });
 
             modelBuilder.Entity("eShopApplication.Domain.Advert.Advert", b =>
@@ -135,6 +177,11 @@ namespace eShopApplication.Host.DbMigrator.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("eShopApplication.Domain.AccountRole.AccountRole", b =>
+                {
+                    b.Navigation("Accounts");
                 });
 
             modelBuilder.Entity("eShopApplication.Domain.Category.Category", b =>

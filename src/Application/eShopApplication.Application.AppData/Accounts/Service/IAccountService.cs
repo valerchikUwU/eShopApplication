@@ -1,4 +1,5 @@
 ﻿using eShopApplication.Contracts.Accounts;
+using eShopApplication.Contracts.Adverts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +35,8 @@ namespace eShopApplication.Application.AppData.Account.Services
         /// <param name="cancellation">Токен отмены.</param>
         /// <returns>Текущий пользователь.</returns>
         Task<ReadAccountDto> GetCurrentAsync(CancellationToken cancellation);
+
+        Task<Guid> UpdateAccountAsync(CreateAccountDto createAccountDto, CancellationToken cancellationToken);
 
     }
 }

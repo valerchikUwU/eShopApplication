@@ -13,11 +13,21 @@ using eShopApplication.Infrastructure.DataAccess.Interfaces;
 using eShopApplication.Infrastructure.Repositories;
 using eShopApplication.Infrastructure.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using eShopApplication.Domain.Account;
+using eShopApplication.Infrastructure.DataAccess.Contexts.Account.Handler;
+using Microsoft.AspNetCore.Authorization;
+using eShopApplication.Infrastructure.DataAccess.Contexts.Account.Requirement;
+using eShopApplication.Application.AppData.AccountRole.Service;
+using eShopApplication.Application.AppData.AccountRole.Repository;
+using eShopApplication.Infrastructure.DataAccess.Contexts.AccountRole.Repository;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,7 +42,6 @@ builder.Services.AddDbContext<eShopApplicationDbContext>((Action<IServiceProvide
 builder.Services.AddScoped((Func<IServiceProvider, DbContext>)(sp => sp.GetRequiredService<eShopApplicationDbContext>()));
 
 
-
 builder.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 
@@ -42,16 +51,19 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAdvertRepository, AdvertRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IAccountRoleRepository, AccountRoleRepository>();
 
 // Add services to the container.
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IAdvertService, AdvertService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IAccountRoleService, AccountRoleService>();
 
 
 
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddEndpointsApiExplorer();
 
 
@@ -73,7 +85,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     };
 });
 
-builder.Services.AddAuthorization();
+builder.Services.AddSingleton<IAuthorizationHandler, AdminRoleHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, UserRoleHandler>();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminPolicy", policy => policy.Requirements.Add(new AdminRoleRequirement("Admin")));
+    options.AddPolicy("UserPolicy", policy => policy.Requirements.Add(new UserRoleRequirement("User")));
+});
 
 
 builder.Services.AddSwaggerGen(options =>
