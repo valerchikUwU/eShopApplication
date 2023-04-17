@@ -56,7 +56,7 @@ namespace eShopApplication.Host.Api.Controllers
         /// <returns>Идентификатор созданного объвления</returns>
         [HttpPost]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
-        [Authorize(Policy = "AdminPolicy, UserPolicy")]
+        [Authorize]
         public async Task<IActionResult> Create([FromBody] CreateAdvertDto createAdvertDto, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Запрос на создание объявления: {JsonConvert.SerializeObject(createAdvertDto)}");
@@ -73,7 +73,7 @@ namespace eShopApplication.Host.Api.Controllers
         /// <returns>Идентификатор обновленного объявления</returns>
         [HttpPut]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
-        [Authorize(Policy = "AdminPolicy, UserPolicy")]
+        [Authorize]
         public async Task<IActionResult> Update([FromBody] UpdateAdvertDto updateAdvertDto, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Запрос на обновление объявления на: {JsonConvert.SerializeObject(updateAdvertDto)}");
@@ -91,7 +91,7 @@ namespace eShopApplication.Host.Api.Controllers
         /// <returns></returns>
         [HttpDelete]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
-        [Authorize(Policy = "AdminPolicy, UserPolicy")]
+        [Authorize]
         public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
         {
 
