@@ -46,6 +46,8 @@ namespace eShopApplication.Contracts.Adverts
         /// </summary>
         public bool IsActive { get; set; } = true;
 
+        public List<Guid> FileIds { get; set; } = new List<Guid>();
+
         /// <summary>
         /// Идентификатор категории
         /// </summary>

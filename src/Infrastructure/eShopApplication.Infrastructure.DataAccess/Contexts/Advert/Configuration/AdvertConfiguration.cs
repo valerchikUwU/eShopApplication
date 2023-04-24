@@ -16,9 +16,12 @@ namespace eShopApplication.Infrastructure.DataAccess.Conteats.Advert.Configurati
             builder.Property(a => a.Name).HasMaxLength(100).IsRequired();
             builder.Property(a => a.Description).HasMaxLength(2000).IsRequired();
             builder.Property(a => a.CreatedAt).HasConversion(a => a, a => DateTime.SpecifyKind(a, DateTimeKind.Utc));
-            builder.Property(a => a.Quantity);
+            builder.Property(a => a.Quantity).IsRequired();
             builder.Property(a => a.IsActive).HasDefaultValue(true);
-            builder.Property(a => a.Cost);
+            builder.Property(a => a.Cost).HasPrecision(15,2).IsRequired();
+            builder.Property(a => a.SerializedFileIds).HasColumnName("FileIds").IsRequired();
+
+            
         }
     }
 }

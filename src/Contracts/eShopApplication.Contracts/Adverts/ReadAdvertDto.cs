@@ -55,5 +55,7 @@ namespace eShopApplication.Contracts.Adverts
         /// Дата/время создания (UTC).
         /// </summary>
         public DateTime CreatedAt { get; set; }
+        public List<Guid> FileIds { get; set; } = new List<Guid>();
+        public Guid AccountId { get; set; }
     }
 }

@@ -12,19 +12,18 @@ namespace eShopApplication.Contracts.Adverts
     public class UpdateAdvertDto
     {
 
+        
+
         /// <summary>
-        /// Уникальынй идентификатор
+        /// Наименование.
         /// </summary>
-        public Guid Id { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Описание.
         /// </summary>
         public string Description { get; set; }
-        /// <summary>
-        /// Наименование.
-        /// </summary>
-        public string Name { get; set; }
+        
 
         /// <summary>
         /// Цена товара
@@ -45,6 +44,8 @@ namespace eShopApplication.Contracts.Adverts
         /// Флаг активности
         /// </summary>
         public bool IsActive { get; set; }
+
+        public List<Guid> FileIds { get; set; } = new List<Guid>();
 
         /// <summary>
         /// Идентификатор категории

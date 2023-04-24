@@ -16,7 +16,11 @@ namespace eShopApplication.Infrastructure.DataAccess.Contexts.Category.Configura
             builder.Property(x => x.ParentId);
             builder.Property(x => x.Name).HasMaxLength(300).IsRequired();
 
-            builder.HasMany(a => a.Adverts).WithOne(a => a.Category).HasForeignKey(c => c.CategoryId).IsRequired().OnDelete(DeleteBehavior.Restrict);
+            builder.HasMany(c => c.Adverts)
+                .WithOne(a => a.Category)
+                .HasForeignKey(a => a.CategoryId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

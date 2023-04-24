@@ -25,11 +25,11 @@ namespace eShopApplication.Application.AppData.Account.Services
 
         public AccountService(
         IAccountRepository accountRepository,
-        IHttpContextAccessor httpContextAccesso,
+        IHttpContextAccessor httpContextAccessor,
         IConfiguration сonfiguration)
         {
             _accountRepository = accountRepository;
-            _httpContextAccessor = httpContextAccesso;
+            _httpContextAccessor = httpContextAccessor;
             _сonfiguration = сonfiguration;
         }
         public async Task<Guid> RegisterAccountAsync(CreateAccountDto accountDto, CancellationToken cancellationToken)
@@ -115,15 +115,17 @@ namespace eShopApplication.Application.AppData.Account.Services
             {
                 throw new Exception($"Не найден пользователь с идентификатором '{id}'.");
             }
-            //TODO
+
             var result = new ReadAccountDto
             {
+                Id = user.Id,
                 Name = user.Name,
                 LastName = user.LastName,
                 PhoneNumber = user.PhoneNumber,
                 NickName = user.NickName,
                 Login = user.Login,
                 RegistrationDate = DateTime.UtcNow,
+                Claims = claims.ToList(),
             };
 
             return result;
@@ -153,6 +155,7 @@ namespace eShopApplication.Application.AppData.Account.Services
             user.NickName = createAccountDto.NickName;
             user.Login = createAccountDto.Login;
             user.Password = createAccountDto.Password;
+            
 
             return await _accountRepository.UpdateAccountAsync(user, cancellationToken);
         }

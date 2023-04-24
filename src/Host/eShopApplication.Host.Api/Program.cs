@@ -28,6 +28,10 @@ using eShopApplication.Application.AppData.AccountRole.Service;
 using eShopApplication.Application.AppData.AccountRole.Repository;
 using eShopApplication.Infrastructure.DataAccess.Contexts.AccountRole.Repository;
 using System.Text.Json.Serialization;
+using eShopApplication.Application.AppData.File.Repository;
+using eShopApplication.Infrastructure.DataAccess.Contexts.File.Repository;
+using eShopApplication.Application.AppData.File.Service;
+using eShopApplication.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,20 +50,24 @@ builder.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 
 
+
 // Add repositories to the container.
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAdvertRepository, AdvertRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IAccountRoleRepository, AccountRoleRepository>();
+builder.Services.AddScoped<IFileRepository, FileRepository>();
 
 // Add services to the container.
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IAdvertService, AdvertService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IAccountRoleService, AccountRoleService>();
+builder.Services.AddScoped<IFileService, FileService>();
 
 
+builder.Services.AddControllers().AddNewtonsoftJson();
 
 
 builder.Services.AddControllers().AddJsonOptions(x =>
@@ -96,6 +104,7 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddSwaggerGen(options =>
 {
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Advert Api", Version = "V1" });
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = @"JWT Authorization header using the Bearer scheme.  

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using eShopApplication.Host.DbMigrator;
 
@@ -11,9 +12,11 @@ using eShopApplication.Host.DbMigrator;
 namespace eShopApplication.Host.DbMigrator.Migrations
 {
     [DbContext(typeof(MigrationDbContext))]
-    partial class MigrationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230420141440_Link_Account_And_Advert")]
+    partial class Link_Account_And_Advert
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -98,7 +101,6 @@ namespace eShopApplication.Host.DbMigrator.Migrations
             modelBuilder.Entity("eShopApplication.Domain.Advert.Advert", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("AccountId")
@@ -136,14 +138,7 @@ namespace eShopApplication.Host.DbMigrator.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<string>("SerializedFileIds")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("FileIds");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("AccountId");
 
                     b.HasIndex("CategoryId");
 
@@ -169,37 +164,6 @@ namespace eShopApplication.Host.DbMigrator.Migrations
                     b.ToTable("Category");
                 });
 
-            modelBuilder.Entity("eShopApplication.Domain.File.File", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<byte[]>("Content")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("ContentType")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Length")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("File");
-                });
-
             modelBuilder.Entity("eShopApplication.Domain.Account.Account", b =>
                 {
                     b.HasOne("eShopApplication.Domain.AccountRole.AccountRole", "AccountRole")
@@ -213,16 +177,16 @@ namespace eShopApplication.Host.DbMigrator.Migrations
 
             modelBuilder.Entity("eShopApplication.Domain.Advert.Advert", b =>
                 {
-                    b.HasOne("eShopApplication.Domain.Account.Account", "Account")
-                        .WithMany("Adverts")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("eShopApplication.Domain.Category.Category", "Category")
                         .WithMany("Adverts")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("eShopApplication.Domain.Account.Account", "Account")
+                        .WithMany("Adverts")
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Account");

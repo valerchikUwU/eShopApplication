@@ -52,7 +52,9 @@ namespace eShopApplication.Application.AppData.Adverts.Service
         /// <param name="updateAdvertDto">Модель обновления объявления</param>
         /// <param name="cancellationToken">Токен отмены</param>
         /// <returns>Идентификатор обновленного объявления</returns>
-        Task<Guid> UpdateAdvertAsync(UpdateAdvertDto updateAdvertDto, CancellationToken cancellationToken);
+        Task<Guid> UpdateAdvertAsync(Guid id, UpdateAdvertDto updateAdvertDto, CancellationToken cancellationToken);
+
+        Task<UpdateAdvertDto> GetUpdateAdvertByIdAsync(Guid id, CancellationToken cancellationToken);
 
         /// <summary>
         /// Удалить объявление

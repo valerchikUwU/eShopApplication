@@ -15,9 +15,9 @@ namespace eShopApplication.Host.Api.Controllers
     public class AccountRoleController : ControllerBase
     {
         private readonly IAccountRoleService _accountRoleService;
-        private readonly ILogger<CategoryController> _logger;
+        private readonly ILogger<AccountRoleController> _logger;
 
-        public AccountRoleController(IAccountRoleService accountRoleService, ILogger<CategoryController> logger)
+        public AccountRoleController(IAccountRoleService accountRoleService, ILogger<AccountRoleController> logger)
         {
             _accountRoleService = accountRoleService;
             _logger = logger;
