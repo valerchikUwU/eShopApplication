@@ -46,7 +46,7 @@ namespace eShopApplication.Host.Api.Controllers
         {
             _logger.LogInformation("Запрос всех постов");
             var result = await _advertService.GetAllAdvertsAsync(cancellationToken);
-            return StatusCode((int)HttpStatusCode.Created, result);
+            return StatusCode((int)HttpStatusCode.OK, result);
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace eShopApplication.Host.Api.Controllers
         {
             _logger.LogInformation($"Запрос всех постов по ключевому полю: {name}");
             var result = await _advertService.GetAdvertsByNameAsync(name, cancellationToken);
-            return StatusCode((int)HttpStatusCode.Created, result);
+            return StatusCode((int)HttpStatusCode.OK, result);
         }
 
         [HttpPatch("{id:Guid}")]
@@ -148,7 +148,17 @@ namespace eShopApplication.Host.Api.Controllers
             _logger.LogInformation("Неполное обновление поста");
             var advert = await _advertService.GetUpdateAdvertByIdAsync(id, cancellationToken);
 
-            var original = advert;
+            var original = new UpdateAdvertDto 
+            {
+                Name = advert.Name,
+                Description = advert.Description,
+                IsActive = advert.IsActive,
+                CategoryId = advert.CategoryId,
+                Cost = advert.Cost,
+                Location = advert.Location,
+                Quantity = advert.Quantity,
+                FileIds = advert.FileIds
+            };
 
             patch.ApplyTo(advert, ModelState);
 
@@ -170,6 +180,15 @@ namespace eShopApplication.Host.Api.Controllers
             return Ok(model);
 
 
+        }
+
+        [HttpGet("current_user")]
+        [Authorize]
+        public async Task<IActionResult> GetAllAdvertsOfCurrentUserAsync(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Все посты данного пользователя");
+            var result = await _advertService.GetAllAdvertsOfCurrentUserAsync(cancellationToken);
+            return StatusCode((int)HttpStatusCode.OK, result);
         }
 
     }

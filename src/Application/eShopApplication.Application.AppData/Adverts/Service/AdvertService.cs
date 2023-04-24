@@ -9,6 +9,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace eShopApplication.Application.AppData.Adverts.Service
 {
@@ -138,6 +139,29 @@ namespace eShopApplication.Application.AppData.Adverts.Service
             existingAdvert.FileIds = updateAdvertDto.FileIds;
 
             return await _advertRepository.UpdateAdvertAsync(existingAdvert, cancellationToken);
+        }
+
+        public async Task<List<ReadAdvertDto>> GetAllAdvertsOfCurrentUserAsync(CancellationToken cancellationToken)
+        {
+            var claims = _httpContextAccessor.HttpContext.User.Claims;
+            var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            var adverts = await _advertRepository.GetAllAdvertsAsync(cancellationToken);
+            var result = adverts.Select(s => new ReadAdvertDto
+            {
+                Id = s.Id,
+                Description = s.Description,
+                Name = s.Name,
+                IsActive = s.IsActive,
+                CreatedAt = s.CreatedAt,
+                CategoryId = s.CategoryId,
+                Cost = s.Cost,
+                Location = s.Location,
+                Quantity = s.Quantity,
+                AccountId = s.AccountId,
+                FileIds = s.FileIds
+            }).Where(s => s.AccountId.Equals(Guid.Parse(claimId)));
+            return result.ToList();
         }
     }
 }

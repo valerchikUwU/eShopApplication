@@ -63,5 +63,7 @@ namespace eShopApplication.Application.AppData.Adverts.Service
         /// <param name="cancellationToken">Токен отмены</param>
         /// <returns></returns>
         Task DeleteAdvertAsync(Guid id, CancellationToken cancellationToken);
+
+        Task<List<ReadAdvertDto>> GetAllAdvertsOfCurrentUserAsync(CancellationToken cancellationToken);
     }
 }

@@ -38,5 +38,7 @@ namespace eShopApplication.Application.AppData.Account.Services
 
         Task<Guid> UpdateAccountAsync(CreateAccountDto createAccountDto, CancellationToken cancellationToken);
 
+        Task<CreateAccountDto> GetCurrentCreatedDtoAsync(CancellationToken cancellationToken);
+
     }
 }

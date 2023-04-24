@@ -14,6 +14,8 @@ using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
+using eShopApplication.Application.AppData.Adverts.Repository;
+using eShopApplication.Contracts.Adverts;
 
 namespace eShopApplication.Application.AppData.Account.Services
 {
@@ -131,6 +133,37 @@ namespace eShopApplication.Application.AppData.Account.Services
             return result;
         }
 
+        public async Task<CreateAccountDto> GetCurrentCreatedDtoAsync(CancellationToken cancellationToken)
+        {
+            var claims = _httpContextAccessor.HttpContext.User.Claims;
+            var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrWhiteSpace(claimId))
+            {
+                return null;
+            }
+
+            var id = Guid.Parse(claimId);
+            var user = await _accountRepository.FindById(id, cancellationToken);
+
+            if (user == null)
+            {
+                throw new Exception($"Не найден пользователь с идентификатором '{id}'.");
+            }
+
+            var result = new CreateAccountDto
+            {
+                Name = user.Name,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                NickName = user.NickName,
+                Login = user.Login,
+                Password = user.Password,
+            };
+
+            return result;
+        }
+
         public async Task<Guid> UpdateAccountAsync(CreateAccountDto createAccountDto, CancellationToken cancellationToken)
         {
             var claims = _httpContextAccessor.HttpContext.User.Claims;
@@ -159,5 +192,7 @@ namespace eShopApplication.Application.AppData.Account.Services
 
             return await _accountRepository.UpdateAccountAsync(user, cancellationToken);
         }
+
+        
     }
 }

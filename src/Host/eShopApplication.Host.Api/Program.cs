@@ -67,7 +67,7 @@ builder.Services.AddScoped<IAccountRoleService, AccountRoleService>();
 builder.Services.AddScoped<IFileService, FileService>();
 
 
-builder.Services.AddControllers().AddNewtonsoftJson();
+//builder.Services.AddControllers().AddNewtonsoftJson();
 
 
 builder.Services.AddControllers().AddJsonOptions(x =>

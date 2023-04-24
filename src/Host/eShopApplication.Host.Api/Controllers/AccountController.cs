@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace eShopApplication.Host.Api.Controllers
 {
@@ -96,6 +97,45 @@ namespace eShopApplication.Host.Api.Controllers
             await _accountService.UpdateAccountAsync(createAccountDto, cancellationToken);
 
             return StatusCode((int)HttpStatusCode.OK, createAccountDto);
+        }
+
+        [HttpPatch]
+        [Authorize]
+        public async Task<IActionResult> PatchAccountAsync( [FromBody] JsonPatchDocument<CreateAccountDto> patch, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Неполное обновление поста");
+            var account = await _accountService.GetCurrentCreatedDtoAsync(cancellationToken);
+
+            var original = new CreateAccountDto 
+            {
+                Name = account.Name,
+                LastName = account.LastName,
+                PhoneNumber = account.PhoneNumber,
+                NickName = account.NickName,
+                Login = account.Login,
+                Password = account.Password,
+            };
+
+            patch.ApplyTo(account, ModelState);
+
+            var isValid = TryValidateModel(account);
+
+            if (!isValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _accountService.UpdateAccountAsync(account, cancellationToken);
+
+            var model = new
+            {
+                original,
+                patched = account
+            };
+
+            return Ok(model);
+
+
         }
     }
 }
