@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,7 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Contracts\eShopApplication.Contracts\eShopApplication.Contracts.csproj" />
     <ProjectReference Include="..\..\Infrastructure\eShopApplication.Infrastructure\eShopApplication.Infrastructure.csproj" />
-	  <ProjectReference Include="C:\Users\koval\source\repos\eShopApplication\src\Domain\eShopApplication.Domain\eShopApplication.Domain.csproj" />
+	  <ProjectReference Include="..\..\Domain\eShopApplication.Domain\eShopApplication.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

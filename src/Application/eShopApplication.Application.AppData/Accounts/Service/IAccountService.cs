@@ -40,5 +40,7 @@ namespace eShopApplication.Application.AppData.Account.Services
 
         Task<CreateAccountDto> GetCurrentCreatedDtoAsync(CancellationToken cancellationToken);
 
+        Task<ResetPasswordTokenAccountDto> GetAccountByLoginAsync(string login, CancellationToken cancellationToken);
+
     }
 }

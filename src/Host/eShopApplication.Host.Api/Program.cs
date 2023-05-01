@@ -4,7 +4,6 @@ using eShopApplication.Application.AppData.Adverts.Repository;
 using eShopApplication.Application.AppData.Adverts.Service;
 using eShopApplication.Application.AppData.Categories.Repository;
 using eShopApplication.Application.AppData.Categories.Service;
-using eShopApplication.Contracts.Adverts;
 using eShopApplication.Infrastructure.DataAccess;
 using eShopApplication.Infrastructure.DataAccess.Contexts.Account.Repositories;
 using eShopApplication.Infrastructure.DataAccess.Contexts.Advert.Repository;
@@ -13,25 +12,21 @@ using eShopApplication.Infrastructure.DataAccess.Interfaces;
 using eShopApplication.Infrastructure.Repositories;
 using eShopApplication.Infrastructure.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using eShopApplication.Domain.Account;
 using eShopApplication.Infrastructure.DataAccess.Contexts.Account.Handler;
 using Microsoft.AspNetCore.Authorization;
 using eShopApplication.Infrastructure.DataAccess.Contexts.Account.Requirement;
 using eShopApplication.Application.AppData.AccountRole.Service;
 using eShopApplication.Application.AppData.AccountRole.Repository;
 using eShopApplication.Infrastructure.DataAccess.Contexts.AccountRole.Repository;
-using System.Text.Json.Serialization;
 using eShopApplication.Application.AppData.File.Repository;
 using eShopApplication.Infrastructure.DataAccess.Contexts.File.Repository;
 using eShopApplication.Application.AppData.File.Service;
-using eShopApplication.Contracts;
+using eShopApplication.Application.AppData.EmailService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,13 +60,14 @@ builder.Services.AddScoped<IAdvertService, AdvertService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IAccountRoleService, AccountRoleService>();
 builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 
-//builder.Services.AddControllers().AddNewtonsoftJson();
+builder.Services.AddControllers().AddNewtonsoftJson();
 
 
-builder.Services.AddControllers().AddJsonOptions(x =>
-                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+//builder.Services.AddControllers().AddJsonOptions(x =>
+//                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddEndpointsApiExplorer();
 
 

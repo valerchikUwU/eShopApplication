@@ -11,9 +11,13 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["src/Host/eShopApplication.Host.Api/eShopApplication.Host.Api.csproj", "src/Host/eShopApplication.Host.Api/"]
+COPY ["src/Application/eShopApplication.Application.AppData.csproj", "src/Application/eShopApplication.Application.AppData"]
+COPY ["src/Contracts/eShopApplication.Contracts.csproj", "src/Contracts/eShopApplication.Contracts"]
+COPY ["src/Infrastructure/eShopApplication.Infrastructure.csproj", "src/Infrastructure/eShopApplication.Infrastructure"]
+COPY ["src/Infrastructure/eShopApplication.Infrastructure.DataAccess.csproj", "src/Infrastructure/eShopApplication.Infrastructure.DataAccess"]
 RUN dotnet restore "src/Host/eShopApplication.Host.Api/eShopApplication.Host.Api.csproj"
 COPY . .
-WORKDIR "/src/src/Host/eShopApplication.Host.Api"
+WORKDIR "src/Host/eShopApplication.Host.Api"
 RUN dotnet build "eShopApplication.Host.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish

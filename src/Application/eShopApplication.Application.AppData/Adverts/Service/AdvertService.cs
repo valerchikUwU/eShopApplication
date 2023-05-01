@@ -45,6 +45,13 @@ namespace eShopApplication.Application.AppData.Adverts.Service
 
         public async Task DeleteAdvertAsync(Guid id, CancellationToken cancellationToken)
         {
+            var claims = _httpContextAccessor.HttpContext.User.Claims;
+            var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var advert = await GetAdvertByIdAsync(id, cancellationToken);
+            if (advert.AccountId != Guid.Parse(claimId))
+            {
+                throw new Exception($"Ваш идентификатор: '{advert.AccountId}' не совпадает с идентификатором автора: '{id}'.");
+            }
             await _advertRepository.DeleteAdvertAsync(id, cancellationToken);
         }
 
@@ -68,7 +75,7 @@ namespace eShopApplication.Application.AppData.Adverts.Service
             return result;
         }
 
-        public async Task<UpdateAdvertDto> GetUpdateAdvertByIdAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<UpdateAdvertDto> GetUpdateAdvertDtoByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             var advert = await _advertRepository.GetAdvertByIdAsync(id, cancellationToken);
             var result = new UpdateAdvertDto
@@ -128,7 +135,14 @@ namespace eShopApplication.Application.AppData.Adverts.Service
 
         public async Task<Guid> UpdateAdvertAsync(Guid id, UpdateAdvertDto updateAdvertDto, CancellationToken cancellationToken)
         {
+            var claims = _httpContextAccessor.HttpContext.User.Claims;
+            var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
             var existingAdvert = await _advertRepository.GetAdvertByIdAsync(id, cancellationToken);
+            if (existingAdvert.AccountId != Guid.Parse(claimId)) 
+            {
+                throw new Exception($"Ваш идентификатор: '{existingAdvert.AccountId}' не совпадает с идентификатором автора: '{id}'.");
+            }
             existingAdvert.Name= updateAdvertDto.Name;
             existingAdvert.Description = updateAdvertDto.Description;
             existingAdvert.CategoryId = updateAdvertDto.CategoryId;
@@ -145,7 +159,8 @@ namespace eShopApplication.Application.AppData.Adverts.Service
         {
             var claims = _httpContextAccessor.HttpContext.User.Claims;
             var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-
+            var id = Guid.Parse(claimId);
+            Console.WriteLine(claimId);
             var adverts = await _advertRepository.GetAllAdvertsAsync(cancellationToken);
             var result = adverts.Select(s => new ReadAdvertDto
             {
@@ -160,7 +175,7 @@ namespace eShopApplication.Application.AppData.Adverts.Service
                 Quantity = s.Quantity,
                 AccountId = s.AccountId,
                 FileIds = s.FileIds
-            }).Where(s => s.AccountId.Equals(Guid.Parse(claimId)));
+            }).Where(s => s.AccountId.Equals(id));
             return result.ToList();
         }
     }

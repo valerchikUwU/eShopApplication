@@ -16,6 +16,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using eShopApplication.Application.AppData.Adverts.Repository;
 using eShopApplication.Contracts.Adverts;
+using System.Runtime.CompilerServices;
 
 namespace eShopApplication.Application.AppData.Account.Services
 {
@@ -126,8 +127,7 @@ namespace eShopApplication.Application.AppData.Account.Services
                 PhoneNumber = user.PhoneNumber,
                 NickName = user.NickName,
                 Login = user.Login,
-                RegistrationDate = DateTime.UtcNow,
-                Claims = claims.ToList(),
+                RegistrationDate = user.RegistrationDate,
             };
 
             return result;
@@ -193,6 +193,16 @@ namespace eShopApplication.Application.AppData.Account.Services
             return await _accountRepository.UpdateAccountAsync(user, cancellationToken);
         }
 
+        public async Task<ResetPasswordTokenAccountDto> GetAccountByLoginAsync(string login, CancellationToken cancellationToken)
+        {
+            var account = await _accountRepository.FindWhere(account => account.Login == login, cancellationToken);
+            var result = new ResetPasswordTokenAccountDto
+            {
+                Login = account.Login,
+            };
+
+            return result;
+        }
         
     }
 }

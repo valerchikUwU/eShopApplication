@@ -51,5 +51,8 @@ namespace eShopApplication.Contracts.Adverts
         /// Идентификатор категории
         /// </summary>
         public Guid CategoryId { get; set; }
+
+
+        public Guid AccountId { get; set; }
     }
 }

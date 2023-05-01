@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net;
+using System.Security.Claims;
 
 namespace eShopApplication.Host.Api.Controllers
 {
@@ -17,6 +18,7 @@ namespace eShopApplication.Host.Api.Controllers
     [Produces("application/json")]
     public class AdvertController : ControllerBase
     {
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IAdvertService _advertService;
         private readonly ILogger<AdvertController> _logger;
 
@@ -26,10 +28,11 @@ namespace eShopApplication.Host.Api.Controllers
         /// </summary>
         /// <param name="logger">Сервис логирования.</param>
         /// <param name="advertService">Сервис для работы с объявлениями.</param>
-        public AdvertController(IAdvertService advertService, ILogger<AdvertController> logger)
+        public AdvertController(IAdvertService advertService, ILogger<AdvertController> logger, IHttpContextAccessor httpContextAccessor)
         {
             _advertService = advertService;
             _logger = logger;
+            _httpContextAccessor = httpContextAccessor;
         }
 
 
@@ -44,7 +47,6 @@ namespace eShopApplication.Host.Api.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Запрос всех постов");
             var result = await _advertService.GetAllAdvertsAsync(cancellationToken);
             return StatusCode((int)HttpStatusCode.OK, result);
         }
@@ -90,7 +92,7 @@ namespace eShopApplication.Host.Api.Controllers
         /// <param name="id">Идентификатор.</param>
         /// <param name="cancellationToken">Токен отмены.</param>
         /// <returns></returns>
-        [HttpDelete]
+        [HttpDelete("{id:Guid}")]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
         [Authorize]
         public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
@@ -145,8 +147,15 @@ namespace eShopApplication.Host.Api.Controllers
         [Authorize]
         public async Task<IActionResult> PatchAdvertAsync(Guid id, [FromBody] JsonPatchDocument<UpdateAdvertDto> patch, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Неполное обновление поста");
-            var advert = await _advertService.GetUpdateAdvertByIdAsync(id, cancellationToken);
+            var claims = _httpContextAccessor.HttpContext.User.Claims;
+            var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            var advert = await _advertService.GetUpdateAdvertDtoByIdAsync(id, cancellationToken);
+
+            if (advert.AccountId != Guid.Parse(claimId))
+            {
+                return StatusCode((int)HttpStatusCode.NotAcceptable, advert);
+            }
 
             var original = new UpdateAdvertDto 
             {
@@ -178,11 +187,10 @@ namespace eShopApplication.Host.Api.Controllers
             };
 
             return Ok(model);
-
-
         }
 
         [HttpGet("current_user")]
+        [ProducesResponseType(typeof(IEnumerable<ReadAdvertDto>), StatusCodes.Status200OK)]
         [Authorize]
         public async Task<IActionResult> GetAllAdvertsOfCurrentUserAsync(CancellationToken cancellationToken)
         {
