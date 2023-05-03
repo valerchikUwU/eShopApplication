@@ -16,19 +16,26 @@ namespace eShopApplication.Application.AppData.EmailService
             _logger = logger;
         }
 
-        public bool SendEmailPasswordReset(string email)
+        public bool SendEmailPasswordReset(string email, string link)
         {
             MailMessage mailMessage = new MailMessage();
             mailMessage.From = new MailAddress("maksim4eg6@mail.ru");
             mailMessage.To.Add(new MailAddress(email));
 
             mailMessage.Subject = "Password Reset";
-            mailMessage.Body = "dsgsdgsdg";
+            mailMessage.IsBodyHtml = true;
+            mailMessage.Priority = MailPriority.High;
+            mailMessage.SubjectEncoding = Encoding.UTF8;
+            mailMessage.Body = link;
 
             SmtpClient client= new SmtpClient();
-            client.Credentials = new System.Net.NetworkCredential("maksim4eg6@mail.ru", "KAKASHKa90");
-            client.Host = "smtpout.secureserver.net";
-            client.Port = 527;
+            client.UseDefaultCredentials = false;
+            client.Credentials = new System.Net.NetworkCredential("maksim4eg6@mail.ru", "Lm9kMCaiNDxQwBVENvTh");
+            client.Host = "smtp.mail.ru";
+            client.EnableSsl = true;
+            client.Port = 465;
+            client.DeliveryFormat = SmtpDeliveryFormat.International;
+            client.DeliveryMethod = SmtpDeliveryMethod.Network;
 
             try
             {

@@ -147,6 +147,14 @@ namespace eShopApplication.Host.Api.Controllers
             return Ok(model);
         }
 
+
+
+        /// <summary>
+        /// TODO!!!!!
+        /// </summary>
+        /// <param name="resetPasswordTokenAccountDto"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpPost("reset-password-token")]
         [AllowAnonymous]
         public async Task<IActionResult> ResetPasswordToken([FromBody] ResetPasswordTokenAccountDto resetPasswordTokenAccountDto, CancellationToken cancellationToken)
@@ -159,7 +167,7 @@ namespace eShopApplication.Host.Api.Controllers
             var secretKey = _сonfiguration["Jwt:Key"];
             var token = new JwtSecurityToken
                 (
-                expires: DateTime.UtcNow.AddDays(1),
+                expires: DateTime.UtcNow.AddHours(2),
                 notBefore: DateTime.UtcNow,
                 signingCredentials: new SigningCredentials(
                     new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
@@ -168,11 +176,11 @@ namespace eShopApplication.Host.Api.Controllers
                 );
             var link = Url.Action("ResetPassword", "Account", new { token, login = resetPasswordTokenAccountDto.Login }, Request.Scheme);
 
-            bool emailResponse = _emailService.SendEmailPasswordReset(resetPasswordTokenAccountDto.Login);
+            bool emailResponse = _emailService.SendEmailPasswordReset(resetPasswordTokenAccountDto.Login, link);
 
             if (emailResponse)
             {
-                return StatusCode((int)HttpStatusCode.OK, "Reset mail sended");
+                return StatusCode((int)HttpStatusCode.OK, $"Reset mail sended to {resetPasswordTokenAccountDto.Login}");
             }
             else
             {
@@ -180,7 +188,12 @@ namespace eShopApplication.Host.Api.Controllers
             }
         }
 
-
+        /// <summary>
+        /// TODO!!!!!
+        /// </summary>
+        /// <param name="resetPasswordAccountDto"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpPost("ResetPassword")]
         [AllowAnonymous]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordAccountDto resetPasswordAccountDto, CancellationToken cancellationToken)

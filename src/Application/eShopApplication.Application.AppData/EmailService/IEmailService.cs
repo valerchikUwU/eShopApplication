@@ -8,6 +8,6 @@ namespace eShopApplication.Application.AppData.EmailService
 {
     public interface IEmailService
     {
-        public bool SendEmailPasswordReset(string email);
+        public bool SendEmailPasswordReset(string email, string link);
     }
 }
