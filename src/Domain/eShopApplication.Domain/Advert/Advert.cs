@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace eShopApplication.Domain.Advert
 {
+    /// <summary>
+    /// Модель объявления
+    /// </summary>
     public class Advert
     {
         /// <summary>
@@ -52,6 +55,9 @@ namespace eShopApplication.Domain.Advert
         /// </summary>
         public int Quantity { get; set; }
 
+        /// <summary>
+        /// Идентификаторы фотографий
+        /// </summary>
         [NotMapped]
         public List<Guid> FileIds { get; set; } = new List<Guid>();
 

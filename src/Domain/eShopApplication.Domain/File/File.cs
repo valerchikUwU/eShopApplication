@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace eShopApplication.Domain.File
 {
+    /// <summary>
+    /// Модель фотографии
+    /// </summary>
     public class File
     {
         /// <summary>

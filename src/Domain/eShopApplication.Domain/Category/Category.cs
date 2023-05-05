@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace eShopApplication.Domain.Category
 {
+    /// <summary>
+    /// Модель категории
+    /// </summary>
     public class Category
     {
         /// <summary>

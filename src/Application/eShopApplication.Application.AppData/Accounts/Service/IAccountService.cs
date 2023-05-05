@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace eShopApplication.Application.AppData.Account.Services
 {
     /// <summary>
-    /// TODO: Подлежит доработке
+    /// Сервис для работы с аккаунтами
     /// </summary>
     public interface IAccountService
     {
@@ -36,10 +36,25 @@ namespace eShopApplication.Application.AppData.Account.Services
         /// <returns>Текущий пользователь.</returns>
         Task<ReadAccountDto> GetCurrentAsync(CancellationToken cancellation);
 
+        /// <summary>
+        /// Обновить аккаунт
+        /// </summary>
+        /// <param name="createAccountDto">Модель создания аккаунта</param>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns></returns>
         Task<Guid> UpdateAccountAsync(CreateAccountDto createAccountDto, CancellationToken cancellationToken);
-
+        /// <summary>
+        /// Получить модель создания текущего аккаунта
+        /// </summary>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns></returns>
         Task<CreateAccountDto> GetCurrentCreatedDtoAsync(CancellationToken cancellationToken);
-
+        /// <summary>
+        /// TODO!!!!!
+        /// </summary>
+        /// <param name="login"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         Task<ResetPasswordTokenAccountDto> GetAccountByLoginAsync(string login, CancellationToken cancellationToken);
 
     }

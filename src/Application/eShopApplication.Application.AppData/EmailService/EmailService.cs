@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace eShopApplication.Application.AppData.EmailService
 {
+    /// <inheritdoc cref="IEmailService"/>
     public class EmailService : IEmailService
     {
         private readonly ILogger<EmailService> _logger;
@@ -16,6 +17,7 @@ namespace eShopApplication.Application.AppData.EmailService
             _logger = logger;
         }
 
+        /// <inheritdoc cref="IEmailService.SendEmailPasswordReset(string, string)"/>
         public bool SendEmailPasswordReset(string email, string link)
         {
             MailMessage mailMessage = new MailMessage();
@@ -33,7 +35,7 @@ namespace eShopApplication.Application.AppData.EmailService
             client.Credentials = new System.Net.NetworkCredential("maksim4eg6@mail.ru", "Lm9kMCaiNDxQwBVENvTh");
             client.Host = "smtp.mail.ru";
             client.EnableSsl = true;
-            client.Port = 465;
+            client.Port = 25;
             client.DeliveryFormat = SmtpDeliveryFormat.International;
             client.DeliveryMethod = SmtpDeliveryMethod.Network;
 

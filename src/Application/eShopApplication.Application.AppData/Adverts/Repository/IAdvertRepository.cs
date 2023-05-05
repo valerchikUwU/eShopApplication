@@ -34,7 +34,7 @@ namespace eShopApplication.Application.AppData.Adverts.Repository
         /// </summary>
         /// <param name="name">Ключевое слово</param>
         /// <param name="cancellationToken">Токен отмены</param>
-        /// <returns></returns>
+        /// <returns>Список объявлений по ключевому слову</returns>
         Task<List<Domain.Advert.Advert>> GetAdvertsByNameAsync(string name, CancellationToken cancellationToken);
 
         /// <summary>

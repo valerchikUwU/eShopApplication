@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace eShopApplication.Domain.Account
 {
+    /// <summary>
+    /// Модель аккаунта
+    /// </summary>
     public class Account
     {
         /// <summary>
@@ -28,7 +31,9 @@ namespace eShopApplication.Domain.Account
         /// Логин пользователя
         /// </summary>
         public string Login { get; set; }
-
+        /// <summary>
+        /// Никнейм пользователя
+        /// </summary>
         public string NickName { get; set; }
 
         /// <summary>
@@ -45,13 +50,21 @@ namespace eShopApplication.Domain.Account
         /// Дата регистрации
         /// </summary>
         public DateTime RegistrationDate { get; set; } = DateTime.UtcNow;
-
+        /// <summary>
+        /// Идентификатор роли
+        /// </summary>
         public Guid AccountRoleId { get; set; }
-
+        /// <summary>
+        /// Название роли
+        /// </summary>
         public string AccountRoleName { get; set; }
-
+        /// <summary>
+        /// Модель роли
+        /// </summary>
         public virtual Domain.AccountRole.AccountRole AccountRole { get; set; }
-
+        /// <summary>
+        /// Список моделей объявлений
+        /// </summary>
         public virtual List<Domain.Advert.Advert> Adverts { get; set; }
     }
 }

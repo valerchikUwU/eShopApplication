@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace eShopApplication.Contracts.Categories
 {
+    /// <summary>
+    /// Модель чтения категории
+    /// </summary>
     public class ReadCategoryDto
     {
         /// <summary>

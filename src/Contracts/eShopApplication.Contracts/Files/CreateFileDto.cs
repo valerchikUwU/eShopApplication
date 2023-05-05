@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace eShopApplication.Contracts.Files
 {
+    /// <summary>
+    /// Модель создания фотографии
+    /// </summary>
     public class CreateFileDto
     {
         /// <summary>

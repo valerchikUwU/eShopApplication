@@ -20,6 +20,7 @@ using System.Runtime.CompilerServices;
 
 namespace eShopApplication.Application.AppData.Account.Services
 {
+    /// <inheritdoc cref="IAccountService" />
     public class AccountService : IAccountService
     {
         private readonly IAccountRepository _accountRepository;
@@ -35,6 +36,8 @@ namespace eShopApplication.Application.AppData.Account.Services
             _httpContextAccessor = httpContextAccessor;
             _сonfiguration = сonfiguration;
         }
+
+        /// <inheritdoc cref="IAccountService.RegisterAccountAsync(CreateAccountDto, CancellationToken)"/>
         public async Task<Guid> RegisterAccountAsync(CreateAccountDto accountDto, CancellationToken cancellationToken)
         {
             var account = new Domain.Account.Account
@@ -61,7 +64,7 @@ namespace eShopApplication.Application.AppData.Account.Services
             return account.Id;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IAccountService.LoginAsync(LoginAccountDto, CancellationToken)"/>
         public async Task<string> LoginAsync(LoginAccountDto accountDto, CancellationToken cancellationToken)
         {
             var existingAccount = await _accountRepository.FindWhere(account => account.Login == accountDto.Login, cancellationToken);
@@ -100,7 +103,7 @@ namespace eShopApplication.Application.AppData.Account.Services
             return result;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IAccountService.GetCurrentAsync(CancellationToken)" />
         public async Task<ReadAccountDto> GetCurrentAsync(CancellationToken cancellationToken)
         {
             var claims = _httpContextAccessor.HttpContext.User.Claims;
@@ -133,6 +136,7 @@ namespace eShopApplication.Application.AppData.Account.Services
             return result;
         }
 
+        /// <inheritdoc cref="IAccountService.GetCurrentCreatedDtoAsync(CancellationToken)"/>
         public async Task<CreateAccountDto> GetCurrentCreatedDtoAsync(CancellationToken cancellationToken)
         {
             var claims = _httpContextAccessor.HttpContext.User.Claims;
@@ -164,6 +168,7 @@ namespace eShopApplication.Application.AppData.Account.Services
             return result;
         }
 
+        /// <inheritdoc cref="IAccountService.UpdateAccountAsync(CreateAccountDto, CancellationToken)"/>
         public async Task<Guid> UpdateAccountAsync(CreateAccountDto createAccountDto, CancellationToken cancellationToken)
         {
             var claims = _httpContextAccessor.HttpContext.User.Claims;
@@ -193,6 +198,8 @@ namespace eShopApplication.Application.AppData.Account.Services
             return await _accountRepository.UpdateAccountAsync(user, cancellationToken);
         }
 
+
+        /// <inheritdoc cref="IAccountService.GetCurrentCreatedDtoAsync(CancellationToken)"/>
         public async Task<ResetPasswordTokenAccountDto> GetAccountByLoginAsync(string login, CancellationToken cancellationToken)
         {
             var account = await _accountRepository.FindWhere(account => account.Login == login, cancellationToken);

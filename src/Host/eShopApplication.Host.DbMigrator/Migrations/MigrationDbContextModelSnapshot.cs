@@ -116,8 +116,8 @@ namespace eShopApplication.Host.DbMigrator.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasMaxLength(1800)
+                        .HasColumnType("nvarchar(1800)");
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()

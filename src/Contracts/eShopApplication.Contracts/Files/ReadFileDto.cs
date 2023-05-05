@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace eShopApplication.Contracts.Files
 {
+    /// <summary>
+    /// Модель чтения фотографии
+    /// </summary>
     public class ReadFileDto
     {
         /// <summary>

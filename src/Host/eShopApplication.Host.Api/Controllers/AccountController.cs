@@ -162,7 +162,7 @@ namespace eShopApplication.Host.Api.Controllers
             var existingAccount = await _accountService.GetAccountByLoginAsync(resetPasswordTokenAccountDto.Login, cancellationToken);
             if (existingAccount == null)
             {
-                return StatusCode(StatusCodes.Status404NotFound, "Account not found");
+                return StatusCode(StatusCodes.Status404NotFound, $"Account: {resetPasswordTokenAccountDto.Login} not found.");
             }
             var secretKey = _сonfiguration["Jwt:Key"];
             var token = new JwtSecurityToken
@@ -180,11 +180,11 @@ namespace eShopApplication.Host.Api.Controllers
 
             if (emailResponse)
             {
-                return StatusCode((int)HttpStatusCode.OK, $"Reset mail sended to {resetPasswordTokenAccountDto.Login}");
+                return StatusCode((int)HttpStatusCode.OK, $"Reset mail sended to {resetPasswordTokenAccountDto.Login}.");
             }
             else
             {
-                return StatusCode((int)HttpStatusCode.BadRequest, "Incorrect email");
+                return StatusCode((int)HttpStatusCode.BadRequest, $"No such mail: {resetPasswordTokenAccountDto.Login}!");
             }
         }
 

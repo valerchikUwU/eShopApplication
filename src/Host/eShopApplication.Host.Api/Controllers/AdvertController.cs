@@ -152,11 +152,6 @@ namespace eShopApplication.Host.Api.Controllers
 
             var advert = await _advertService.GetUpdateAdvertDtoByIdAsync(id, cancellationToken);
 
-            if (advert.AccountId != Guid.Parse(claimId))
-            {
-                return StatusCode((int)HttpStatusCode.NotAcceptable, advert);
-            }
-
             var original = new UpdateAdvertDto 
             {
                 Name = advert.Name,
@@ -186,7 +181,7 @@ namespace eShopApplication.Host.Api.Controllers
                 patched = advert
             };
 
-            return Ok(model);
+            return StatusCode((int)HttpStatusCode.OK, model);
         }
 
         [HttpGet("current_user")]

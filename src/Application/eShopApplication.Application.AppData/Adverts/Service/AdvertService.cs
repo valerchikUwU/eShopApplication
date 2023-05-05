@@ -13,6 +13,8 @@ using System.Xml.Linq;
 
 namespace eShopApplication.Application.AppData.Adverts.Service
 {
+
+    /// <inheritdoc cref="IAdvertService"/>
     public class AdvertService : IAdvertService
     {
         private readonly IAdvertRepository _advertRepository;
@@ -24,6 +26,8 @@ namespace eShopApplication.Application.AppData.Adverts.Service
             _httpContextAccessor = httpContextAccessor;
         }
 
+
+        /// <inheritdoc cref="IAdvertService.AddAdvertAsync(CreateAdvertDto, CancellationToken)"/>
         public async Task<Guid> AddAdvertAsync(CreateAdvertDto createAdvertDto, CancellationToken cancellationToken)
         {
             var claims = _httpContextAccessor.HttpContext.User.Claims;
@@ -43,6 +47,8 @@ namespace eShopApplication.Application.AppData.Adverts.Service
             return await _advertRepository.AddAdvertAsync(advert, cancellationToken);
         }
 
+
+        /// <inheritdoc cref="IAdvertService.DeleteAdvertAsync(Guid, CancellationToken)"/>
         public async Task DeleteAdvertAsync(Guid id, CancellationToken cancellationToken)
         {
             var claims = _httpContextAccessor.HttpContext.User.Claims;
@@ -55,6 +61,7 @@ namespace eShopApplication.Application.AppData.Adverts.Service
             await _advertRepository.DeleteAdvertAsync(id, cancellationToken);
         }
 
+        /// <inheritdoc cref="IAdvertService.GetAdvertByIdAsync(Guid, CancellationToken)"/>
         public async Task<ReadAdvertDto> GetAdvertByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             var advert = await _advertRepository.GetAdvertByIdAsync(id, cancellationToken);
@@ -75,9 +82,17 @@ namespace eShopApplication.Application.AppData.Adverts.Service
             return result;
         }
 
+        /// <inheritdoc cref="IAdvertService.GetUpdateAdvertDtoByIdAsync(Guid, CancellationToken)"/>
         public async Task<UpdateAdvertDto> GetUpdateAdvertDtoByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            var advert = await _advertRepository.GetAdvertByIdAsync(id, cancellationToken);
+            var claims = _httpContextAccessor.HttpContext.User.Claims;
+            var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var advert = await GetAdvertByIdAsync(id, cancellationToken);
+            if (advert.AccountId != Guid.Parse(claimId))
+            {
+                throw new Exception($"Ваш идентификатор: '{advert.AccountId}' не совпадает с идентификатором автора: '{id}'.");
+            }
+
             var result = new UpdateAdvertDto
             {
                 Name = advert.Name,
@@ -92,6 +107,7 @@ namespace eShopApplication.Application.AppData.Adverts.Service
             return result;
         }
 
+        /// <inheritdoc cref="IAdvertService.GetAdvertsByNameAsync(string, CancellationToken)"/>
         public async Task<List<ReadAdvertDto>> GetAdvertsByNameAsync(string name, CancellationToken cancellationToken)
         {
             var adverts = await _advertRepository.GetAllAdvertsAsync(cancellationToken);
@@ -108,10 +124,11 @@ namespace eShopApplication.Application.AppData.Adverts.Service
                 Quantity = s.Quantity,
                 AccountId = s.AccountId,
                 FileIds = s.FileIds
-            }).Where(s => s.Name.Contains(name));
+            }).Where(s => s.Name.Contains(name)).Where(s => s.IsActive == true);
             return result.ToList();
         }
 
+        /// <inheritdoc cref="IAdvertService.GetAllAdvertsAsync(CancellationToken)"/>
         public async Task<List<ReadAdvertDto>> GetAllAdvertsAsync(CancellationToken cancellationToken)
         {
             var adverts = await _advertRepository.GetAllAdvertsAsync(cancellationToken);
@@ -128,11 +145,11 @@ namespace eShopApplication.Application.AppData.Adverts.Service
                 Quantity = s.Quantity,
                 AccountId = s.AccountId,
                 FileIds = s.FileIds
-            });
+            }).Where(s => s.IsActive == true);
             return result.ToList();
         }
 
-
+        /// <inheritdoc cref="IAdvertService.UpdateAdvertAsync(Guid, UpdateAdvertDto, CancellationToken)"/>
         public async Task<Guid> UpdateAdvertAsync(Guid id, UpdateAdvertDto updateAdvertDto, CancellationToken cancellationToken)
         {
             var claims = _httpContextAccessor.HttpContext.User.Claims;
@@ -155,6 +172,8 @@ namespace eShopApplication.Application.AppData.Adverts.Service
             return await _advertRepository.UpdateAdvertAsync(existingAdvert, cancellationToken);
         }
 
+
+        /// <inheritdoc cref="IAdvertService.GetAllAdvertsOfCurrentUserAsync(CancellationToken)"/>
         public async Task<List<ReadAdvertDto>> GetAllAdvertsOfCurrentUserAsync(CancellationToken cancellationToken)
         {
             var claims = _httpContextAccessor.HttpContext.User.Claims;

@@ -44,7 +44,9 @@ namespace eShopApplication.Contracts.Adverts
         /// Флаг активности
         /// </summary>
         public bool IsActive { get; set; }
-
+        /// <summary>
+        /// Идентификаторы фотографий
+        /// </summary>
         public List<Guid> FileIds { get; set; } = new List<Guid>();
 
         /// <summary>
@@ -52,7 +54,5 @@ namespace eShopApplication.Contracts.Adverts
         /// </summary>
         public Guid CategoryId { get; set; }
 
-
-        public Guid AccountId { get; set; }
     }
 }

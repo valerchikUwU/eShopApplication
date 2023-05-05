@@ -36,7 +36,7 @@ namespace eShopApplication.Application.AppData.Adverts.Service
         /// </summary>
         /// <param name="name">Ключевое слово</param>
         /// <param name="cancellationToken">Токен отмены</param>
-        /// <returns>Список объявления</returns>
+        /// <returns>Список объявления по ключевому слову</returns>
         Task<List<ReadAdvertDto>> GetAdvertsByNameAsync(string name, CancellationToken cancellationToken);
 
         /// <summary>
@@ -53,7 +53,12 @@ namespace eShopApplication.Application.AppData.Adverts.Service
         /// <param name="cancellationToken">Токен отмены</param>
         /// <returns>Идентификатор обновленного объявления</returns>
         Task<Guid> UpdateAdvertAsync(Guid id, UpdateAdvertDto updateAdvertDto, CancellationToken cancellationToken);
-
+        /// <summary>
+        /// Получить модель объявления по идентификатору
+        /// </summary>
+        /// <param name="id">Идентификатор объявления</param>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns>Модель обновления объявления</returns>
         Task<UpdateAdvertDto> GetUpdateAdvertDtoByIdAsync(Guid id, CancellationToken cancellationToken);
 
         /// <summary>
@@ -64,6 +69,11 @@ namespace eShopApplication.Application.AppData.Adverts.Service
         /// <returns></returns>
         Task DeleteAdvertAsync(Guid id, CancellationToken cancellationToken);
 
+        /// <summary>
+        /// Получить все объявления авторизированного пользователя
+        /// </summary>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns>Список объявлений авторизованного пользователя</returns>
         Task<List<ReadAdvertDto>> GetAllAdvertsOfCurrentUserAsync(CancellationToken cancellationToken);
     }
 }

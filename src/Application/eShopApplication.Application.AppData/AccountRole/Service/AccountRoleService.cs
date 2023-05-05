@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace eShopApplication.Application.AppData.AccountRole.Service
 {
+    /// <inheritdoc cref="IAccountRoleService"/>
     public class AccountRoleService : IAccountRoleService
     {
 
@@ -19,6 +20,8 @@ namespace eShopApplication.Application.AppData.AccountRole.Service
         {
             _accountRoleRepository = accountRoleRepository;
         }
+
+        /// <inheritdoc cref="IAccountRoleService.AddAccountRoleAsync(CreateAccountRoleDto, CancellationToken)"/>
         public async Task<Guid> AddAccountRoleAsync(CreateAccountRoleDto createAccountRoleDto, CancellationToken cancellationToken)
         {
             var accountRole = new Domain.AccountRole.AccountRole
@@ -30,11 +33,15 @@ namespace eShopApplication.Application.AppData.AccountRole.Service
             return await _accountRoleRepository.AddAccountRoleAsync(accountRole, cancellationToken);
         }
 
+
+        /// <inheritdoc cref="IAccountRoleService.DeleteAccountRoleAsync(Guid, CancellationToken)"/>
         public async Task DeleteAccountRoleAsync(Guid id, CancellationToken cancellationToken)
         {
             await _accountRoleRepository.DeleteAccountRoleAsync(id, cancellationToken);
         }
 
+
+        /// <inheritdoc cref="IAccountRoleService.GetAllAccountRolesAsync(CancellationToken)"/>
         public async Task<List<ReadAccountRoleDto>> GetAllAccountRolesAsync(CancellationToken cancellationToken)
         {
             var accountRoles = await _accountRoleRepository.GetAllAccountRolesAsync(cancellationToken);
