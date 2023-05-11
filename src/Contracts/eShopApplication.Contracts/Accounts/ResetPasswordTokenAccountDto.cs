@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace eShopApplication.Contracts.Accounts
 {
     /// <summary>
-    /// Токен восстановления пароля
+    /// Логин для восстановления пароля
     /// </summary>
     public class ResetPasswordTokenAccountDto
     {

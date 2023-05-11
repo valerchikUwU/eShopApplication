@@ -11,6 +11,10 @@ using System.Threading.Tasks;
 
 namespace eShopApplication.Infrastructure.DataAccess.Contexts.Account.Handler
 {
+
+    /// <summary>
+    /// Обработчик для оценки требований роли как админа
+    /// </summary>
     public class AdminRoleHandler : AuthorizationHandler<AdminRoleRequirement>
     {
 
@@ -20,6 +24,13 @@ namespace eShopApplication.Infrastructure.DataAccess.Contexts.Account.Handler
             _contextAccessor = contextAccessor;
         }
 
+
+        /// <summary>
+        /// Обработчик
+        /// </summary>
+        /// <param name="context">Контекст сведений об авторизации</param>
+        /// <param name="requirement">Требование роли</param>
+        /// <returns></returns>
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, AdminRoleRequirement requirement)
         {
             var claims = _contextAccessor.HttpContext.User.Claims;

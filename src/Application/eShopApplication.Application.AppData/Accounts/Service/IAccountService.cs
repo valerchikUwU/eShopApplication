@@ -50,12 +50,19 @@ namespace eShopApplication.Application.AppData.Account.Services
         /// <returns></returns>
         Task<CreateAccountDto> GetCurrentCreatedDtoAsync(CancellationToken cancellationToken);
         /// <summary>
-        /// TODO!!!!!
+        /// Найти аккаунт по логину
         /// </summary>
-        /// <param name="login"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <param name="login">Логин</param>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns>Модель токена восстановления пароля</returns>
         Task<ResetPasswordTokenAccountDto> GetAccountByLoginAsync(string login, CancellationToken cancellationToken);
+        /// <summary>
+        /// Восстановление пароля
+        /// </summary>
+        /// <param name="resetPasswordAccountDto">Модель восстановления пароля</param>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns>Идентификатор обновленного аккаунта</returns>
+        Task<Guid> ResetPasswordAsync(ResetPasswordAccountDto resetPasswordAccountDto, CancellationToken cancellationToken);
 
     }
 }

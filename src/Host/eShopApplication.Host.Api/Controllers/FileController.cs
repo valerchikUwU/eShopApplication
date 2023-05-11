@@ -40,6 +40,7 @@ namespace eShopApplication.Host.Api.Controllers
         [HttpGet("{id}/info")]
         [ProducesResponseType(typeof(ReadFileDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status401Unauthorized)]
         [Authorize]
         public async Task<IActionResult> GetInfoById(Guid id, CancellationToken cancellationToken)
         {
@@ -57,6 +58,7 @@ namespace eShopApplication.Host.Api.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status401Unauthorized)]
         [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = long.MaxValue)]
         [DisableRequestSizeLimit]
         [Authorize]
@@ -110,6 +112,7 @@ namespace eShopApplication.Host.Api.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status401Unauthorized)]
         [Authorize]
         public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
         {

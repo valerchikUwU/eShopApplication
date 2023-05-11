@@ -23,7 +23,10 @@ namespace eShopApplication.Infrastructure.DataAccess
         {
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Метод для настройки модели
+        /// </summary>
+        /// <param name="modelBuilder">Построитель, используемый для создания модели для этого контекста</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly(), t => t.GetInterfaces().Any(i =>

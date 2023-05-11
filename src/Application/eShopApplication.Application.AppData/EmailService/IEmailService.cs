@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,6 @@ namespace eShopApplication.Application.AppData.EmailService
         /// <param name="email">Почта пользователя, запрашивающего восстановление пароля</param>
         /// <param name="link">Ссылка восстановления</param>
         /// <returns></returns>
-        public bool SendEmailPasswordReset(string email, string link);
+        public bool SendEmailPasswordReset(string email, JwtSecurityToken token);
     }
 }

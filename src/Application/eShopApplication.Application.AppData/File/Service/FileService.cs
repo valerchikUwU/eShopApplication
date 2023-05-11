@@ -11,23 +11,26 @@ using System.Threading.Tasks;
 
 namespace eShopApplication.Application.AppData.File.Service
 {
+    /// <inheritdoc cref="IFileService"/>
     public class FileService : IFileService
     {
         private readonly IFileRepository _fileRepository;
 
-        /// <summary>
-        /// Инициализация экземпляра <see cref="FileService"/>.
-        /// </summary>        
+            
         public FileService(IFileRepository fileRepository)
         {
             _fileRepository = fileRepository;
         }
 
+
+        /// <inheritdoc cref="IFileService.DeleteFileAsync(Guid, CancellationToken)"/>
         public Task DeleteFileAsync(Guid id, CancellationToken cancellationToken)
         {
             return _fileRepository.DeleteFileAsync(id, cancellationToken);
         }
 
+
+        /// <inheritdoc cref="IFileService.DownloadFileAsync(Guid, CancellationToken)"/>
         public async Task<CreateFileDto> DownloadFileAsync(Guid id, CancellationToken cancellationToken)
         {
             var file = await _fileRepository.GetFileByIdAsync(id, cancellationToken);
@@ -41,6 +44,8 @@ namespace eShopApplication.Application.AppData.File.Service
             return result;
         }
 
+
+        /// <inheritdoc cref="IFileService.GetFileByIdAsync(Guid, CancellationToken)"/>
         public async Task<ReadFileDto> GetFileByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             var file = await _fileRepository.GetFileByIdAsync(id, cancellationToken);
@@ -54,6 +59,8 @@ namespace eShopApplication.Application.AppData.File.Service
             return result;
         }
 
+
+        /// <inheritdoc cref="IFileService.UploadFileAsync(CreateFileDto, CancellationToken)"/>
         public async Task<Guid> UploadFileAsync(CreateFileDto createFileDto, CancellationToken cancellationToken)
         {
             var file = new Domain.File.File

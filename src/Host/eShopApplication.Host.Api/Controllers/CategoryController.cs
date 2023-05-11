@@ -1,5 +1,6 @@
 ﻿using eShopApplication.Application.AppData.Adverts.Service;
 using eShopApplication.Application.AppData.Categories.Service;
+using eShopApplication.Contracts;
 using eShopApplication.Contracts.Adverts;
 using eShopApplication.Contracts.Categories;
 using Microsoft.AspNetCore.Authorization;
@@ -27,10 +28,10 @@ namespace eShopApplication.Host.Api.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<ReadAdvertDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status401Unauthorized)]
         [Authorize]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Запрос категорий");
             var result = await _categoryService.GetAllCategoriesAsync(cancellationToken);
             return StatusCode((int)HttpStatusCode.Created, result);
         }
@@ -38,6 +39,7 @@ namespace eShopApplication.Host.Api.Controllers
 
         [HttpPost]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status401Unauthorized)]
         [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> Create([FromBody] CreateCategoryDto dto, CancellationToken cancellationToken)
         {
@@ -47,16 +49,17 @@ namespace eShopApplication.Host.Api.Controllers
 
         [HttpPut]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status401Unauthorized)]
         [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> Update([FromBody] ReadCategoryDto readCategoryDto, CancellationToken cancellationToken)
         {
             await _categoryService.UpdateCategoryAsync(readCategoryDto, cancellationToken);
-
             return StatusCode((int)HttpStatusCode.OK, readCategoryDto);
         }
 
         [HttpDelete]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status401Unauthorized)]
         [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> Delete([FromBody] Guid id, CancellationToken cancellationToken)
         {
@@ -67,6 +70,7 @@ namespace eShopApplication.Host.Api.Controllers
         }
 
         [HttpGet("{id:Guid}")]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status401Unauthorized)]
         [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
         {
@@ -84,6 +88,7 @@ namespace eShopApplication.Host.Api.Controllers
 
         [HttpGet("by_name")]
         [ProducesResponseType(typeof(IEnumerable<ReadCategoryDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status401Unauthorized)]
         [Authorize]
         public async Task<IActionResult> GetAllCategoriesByNameAsync(string name, CancellationToken cancellationToken)
         {

@@ -13,6 +13,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using eShopApplication.Application.AppData.EmailService;
+using Microsoft.AspNetCore.Identity;
+using Azure;
+using eShopApplication.Contracts;
 
 namespace eShopApplication.Host.Api.Controllers
 {
@@ -22,8 +25,8 @@ namespace eShopApplication.Host.Api.Controllers
     /// <response code="500">Произошла внутренняя ошибка.</response>
     [ApiController]
     [Route("[controller]")]
-    [AllowAnonymous]
     [Produces("application/json")]
+    [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status500InternalServerError)]
     public class AccountController : ControllerBase
     {
         private readonly ILogger<AccountController> _logger;
@@ -32,9 +35,12 @@ namespace eShopApplication.Host.Api.Controllers
         private readonly IEmailService _emailService;
 
         /// <summary>
-        /// Инициализирует экземпляр <see cref="AccountController"/>
+        /// Инициализиурет экземпляр контроллера
         /// </summary>
-        /// <param name="logger">Сервис логирования.</param>
+        /// <param name="logger">Сервис логгирования</param>
+        /// <param name="accountService">Сервис аккаунтов</param>
+        /// <param name="configuration">Сервис для работы с конфигурационными свойствами</param>
+        /// <param name="emailService">Сервис отправки электронных писем</param>
         public AccountController(ILogger<AccountController> logger, IAccountService accountService, IConfiguration configuration, IEmailService emailService)
         {
             _logger = logger;
@@ -53,13 +59,13 @@ namespace eShopApplication.Host.Api.Controllers
         /// <response code="422">Произошёл конфликт бизнес-логики.</response>
         /// <returns>Модель зарегистрированного аккаунта.</returns>
         [HttpPost("register")]
-        [ProducesResponseType(typeof(ReadAccountDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status422UnprocessableEntity)]
+        [AllowAnonymous]
         public async Task<IActionResult> RegisterAccount([FromBody] CreateAccountDto dto, CancellationToken cancellation)
         {
-            _logger.LogInformation("Регистрация нового аккаунта.");
-
             var result = await _accountService.RegisterAccountAsync(dto, cancellation);
-
             return await Task.Run(() => CreatedAtAction(nameof(Login), result), cancellation);
         }
 
@@ -76,32 +82,49 @@ namespace eShopApplication.Host.Api.Controllers
         /// <response code="404">Пользователь не найден.</response>
         /// <returns>Модель с данными входа.</returns>
         [HttpPost("login")]
-        [ProducesResponseType(typeof(LoginResultDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status404NotFound)]
+        [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginAccountDto dto, CancellationToken cancellation)
         {
-            _logger.LogInformation("Вход в аккаунт.");
-
             var result = await _accountService.LoginAsync(dto, cancellation);
-
             return await Task.Run(() => Ok(result), cancellation);
         }
 
-        [HttpPost("logout")]
-        public async Task Logout(string token)
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        }
-
+        /// <summary>
+        /// Получить информацию об авторизированном пользователе
+        /// </summary>
+        /// <param name="cancellation">Токен отмены</param>
+        /// <response code="200">Запрос выполнен успешно</response>
+        /// <response code="400">Модель данных запроса невалидна.</response>
+        /// <response code="404">Пользователь не найден.</response>
+        /// <returns>Модель чтения аккаунта></returns>
         [HttpPost("GetUserInfo")]
+        [ProducesResponseType(typeof(ReadAccountDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status401Unauthorized)]
+        [Authorize]
         public async Task<ReadAccountDto> GetUserInfo(CancellationToken cancellation)
         {
             var result = await _accountService.GetCurrentAsync(cancellation);
-
             return result;
-
         }
 
+        /// <summary>
+        /// Обновить аккаунт
+        /// </summary>
+        /// <param name="createAccountDto">Модель создания аккаунта</param>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns>Идентификатор обновленной модели</returns>
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status401Unauthorized)]
         [HttpPut("UpdateCurrentAccount")]
+        [Authorize]
         public async Task<IActionResult> UpdateAccountAsync([FromBody] CreateAccountDto createAccountDto, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Запрос на обновление аккаунта на: {JsonConvert.SerializeObject(createAccountDto)}");
@@ -110,11 +133,21 @@ namespace eShopApplication.Host.Api.Controllers
             return StatusCode((int)HttpStatusCode.OK, createAccountDto);
         }
 
+
+        /// <summary>
+        /// Частично обновить аккаунт
+        /// </summary>
+        /// <param name="patch">Изменяемые поля</param>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns>Измененную модель</returns>
         [HttpPatch("PatchCurrentAccount")]
+        [ProducesResponseType(typeof(CreateAccountDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status401Unauthorized, "Вы не авторизованы")]
         [Authorize]
         public async Task<IActionResult> PatchAccountAsync([FromBody] JsonPatchDocument<CreateAccountDto> patch, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Неполное обновление поста");
             var account = await _accountService.GetCurrentCreatedDtoAsync(cancellationToken);
 
             var original = new CreateAccountDto
@@ -148,21 +181,23 @@ namespace eShopApplication.Host.Api.Controllers
         }
 
 
-
         /// <summary>
-        /// TODO!!!!!
+        /// Отправка на почту токена восстановления пароля
         /// </summary>
-        /// <param name="resetPasswordTokenAccountDto"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <param name="resetPasswordTokenAccountDto">Модель токена</param>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns>Письмо на почту</returns>
         [HttpPost("reset-password-token")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status404NotFound)]
         [AllowAnonymous]
         public async Task<IActionResult> ResetPasswordToken([FromBody] ResetPasswordTokenAccountDto resetPasswordTokenAccountDto, CancellationToken cancellationToken)
         {
             var existingAccount = await _accountService.GetAccountByLoginAsync(resetPasswordTokenAccountDto.Login, cancellationToken);
             if (existingAccount == null)
             {
-                return StatusCode(StatusCodes.Status404NotFound, $"Account: {resetPasswordTokenAccountDto.Login} not found.");
+                return StatusCode((int)HttpStatusCode.BadRequest, $"Не найден аккаунт с логином: {resetPasswordTokenAccountDto.Login}.");
             }
             var secretKey = _сonfiguration["Jwt:Key"];
             var token = new JwtSecurityToken
@@ -174,46 +209,53 @@ namespace eShopApplication.Host.Api.Controllers
                     SecurityAlgorithms.HmacSha256
                     )
                 );
-            var link = Url.Action("ResetPassword", "Account", new { token, login = resetPasswordTokenAccountDto.Login }, Request.Scheme);
 
-            bool emailResponse = _emailService.SendEmailPasswordReset(resetPasswordTokenAccountDto.Login, link);
+
+            bool emailResponse = _emailService.SendEmailPasswordReset(resetPasswordTokenAccountDto.Login, token);
 
             if (emailResponse)
             {
-                return StatusCode((int)HttpStatusCode.OK, $"Reset mail sended to {resetPasswordTokenAccountDto.Login}.");
+                return StatusCode((int)HttpStatusCode.OK, $"Письмо с токеном восстановления отправлено на: {resetPasswordTokenAccountDto.Login}.");
             }
             else
             {
-                return StatusCode((int)HttpStatusCode.BadRequest, $"No such mail: {resetPasswordTokenAccountDto.Login}!");
+                return StatusCode((int)HttpStatusCode.BadRequest, $"Невозможно отправить письмо на почту: {resetPasswordTokenAccountDto.Login}!");
             }
         }
 
+
         /// <summary>
-        /// TODO!!!!!
+        /// Восстановление пароля
         /// </summary>
-        /// <param name="resetPasswordAccountDto"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <param name="resetPasswordAccountDto">Модель восстановления пароля</param>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns>Обновленная модель аккаунта</returns>
         [HttpPost("ResetPassword")]
+        [ProducesResponseType(typeof(ResetPasswordAccountDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status404NotFound)]
         [AllowAnonymous]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordAccountDto resetPasswordAccountDto, CancellationToken cancellationToken)
         {
             var existingAccount = await _accountService.GetAccountByLoginAsync(resetPasswordAccountDto.Login, cancellationToken);
-            if (existingAccount != null)
+            if (existingAccount == null)
             {
                 return StatusCode(StatusCodes.Status404NotFound);
             }
             if (string.Compare(resetPasswordAccountDto.Password, resetPasswordAccountDto.ConfirmedPassword) != 0)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, "Passwords not match");
+                return StatusCode(StatusCodes.Status400BadRequest, "Пароли не совпадают");
             }
 
             if(string.IsNullOrEmpty(resetPasswordAccountDto.Token))
             {
-                return StatusCode(StatusCodes.Status400BadRequest, "No token");
+                return StatusCode(StatusCodes.Status400BadRequest, "Токен не найден");
             }
 
-            return StatusCode(StatusCodes.Status200OK);
+            await _accountService.ResetPasswordAsync(resetPasswordAccountDto, cancellationToken);
+
+
+            return StatusCode(StatusCodes.Status200OK, "Пароль успешно сменён!");
         }
     }
 }

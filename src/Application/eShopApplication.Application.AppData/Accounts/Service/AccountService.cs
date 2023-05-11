@@ -17,6 +17,10 @@ using Microsoft.IdentityModel.Tokens;
 using eShopApplication.Application.AppData.Adverts.Repository;
 using eShopApplication.Contracts.Adverts;
 using System.Runtime.CompilerServices;
+using Newtonsoft.Json.Linq;
+using Org.BouncyCastle.Crypto.Parameters;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Logging;
 
 namespace eShopApplication.Application.AppData.Account.Services
 {
@@ -71,7 +75,7 @@ namespace eShopApplication.Application.AppData.Account.Services
             if (existingAccount == null)
             {
                 throw new Exception("Пользователь не найден!");
-            }
+            }   
 
             if (!existingAccount.Password.Equals(accountDto.Password))
             {
@@ -199,10 +203,14 @@ namespace eShopApplication.Application.AppData.Account.Services
         }
 
 
-        /// <inheritdoc cref="IAccountService.GetCurrentCreatedDtoAsync(CancellationToken)"/>
+        /// <inheritdoc cref="IAccountService.GetAccountByLoginAsync(string, CancellationToken)"/>
         public async Task<ResetPasswordTokenAccountDto> GetAccountByLoginAsync(string login, CancellationToken cancellationToken)
         {
-            var account = await _accountRepository.FindWhere(account => account.Login == login, cancellationToken);
+            var account = await _accountRepository.FindWhere(account => account.Login.Equals(login), cancellationToken);
+            if (account == null)
+            {
+                throw new Exception($"Не найден пользователь с логином '{login}'.");
+            }
             var result = new ResetPasswordTokenAccountDto
             {
                 Login = account.Login,
@@ -210,6 +218,31 @@ namespace eShopApplication.Application.AppData.Account.Services
 
             return result;
         }
-        
+
+
+        /// <inheritdoc cref="IAccountService.ResetPasswordAsync(ResetPasswordAccountDto, CancellationToken)"/>
+        public async Task<Guid> ResetPasswordAsync(ResetPasswordAccountDto resetPasswordAccountDto, CancellationToken cancellationToken)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var secretKey = _сonfiguration["Jwt:Key"];
+            var validator = new JwtSecurityTokenHandler();
+            SecurityToken validatedToken;
+            TokenValidationParameters validationParameters = new TokenValidationParameters();
+            validationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+            validationParameters.ValidateAudience = false;
+            validationParameters.ValidateIssuer = false;
+            validationParameters.ValidateLifetime = false;
+            validationParameters.ValidateIssuerSigningKey = true;
+            var account = await _accountRepository.FindWhere(account => account.Login == resetPasswordAccountDto.Login, cancellationToken);
+
+            if (account == null)
+            {
+                throw new Exception($"Не найден пользователь с логином '{resetPasswordAccountDto.Login}'.");
+            }
+            IPrincipal principal = tokenHandler.ValidateToken(resetPasswordAccountDto.Token, validationParameters, out validatedToken);
+            account.Password = resetPasswordAccountDto.Password;
+            return await _accountRepository.UpdateAccountAsync(account, cancellationToken);
+        }
+
     }
 }

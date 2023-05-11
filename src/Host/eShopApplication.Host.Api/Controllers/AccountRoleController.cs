@@ -1,6 +1,8 @@
 ﻿using eShopApplication.Application.AppData.AccountRole.Service;
 using eShopApplication.Application.AppData.Categories.Service;
+using eShopApplication.Contracts;
 using eShopApplication.Contracts.AccountRole;
+using eShopApplication.Contracts.Accounts;
 using eShopApplication.Contracts.Adverts;
 using eShopApplication.Contracts.Categories;
 using Microsoft.AspNetCore.Authorization;
@@ -9,8 +11,12 @@ using System.Net;
 
 namespace eShopApplication.Host.Api.Controllers
 {
+    /// <summary>
+    /// Контроллер ролей аккаунтов
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
+    [Authorize(Policy = "AdminPolicy")]
     [Produces("application/json")]
     public class AccountRoleController : ControllerBase
     {
@@ -24,31 +30,49 @@ namespace eShopApplication.Host.Api.Controllers
         }
 
 
-
+        /// <summary>
+        /// Получить все роли
+        /// </summary>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns>Список ролей</returns>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<ReadAdvertDto>), StatusCodes.Status200OK)]
-        [Authorize(Policy ="AdminPolicy")]
+        [ProducesResponseType(typeof(List<ReadAccountRoleDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status401Unauthorized)]
+        
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Запрос ролей");
             var result = await _accountRoleService.GetAllAccountRolesAsync(cancellationToken);
             return StatusCode((int)HttpStatusCode.Created, result);
         }
 
 
+        /// <summary>
+        /// Создание роли
+        /// </summary>
+        /// <param name="dto">Модель создания роли</param>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns>Идентификатор созданной модели</returns>
         [HttpPost]
-        [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
-        [Authorize(Policy ="AdminPolicy")]
+        [ProducesResponseType(typeof(CreateAccountRoleDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Create([FromBody] CreateAccountRoleDto dto, CancellationToken cancellationToken)
         {
             var result = await _accountRoleService.AddAccountRoleAsync(dto, cancellationToken);
             return StatusCode((int)HttpStatusCode.Created, result);
         }
 
-
+        /// <summary>
+        /// Удаление роли
+        /// </summary>
+        /// <param name="id">Идентификатор роли</param>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns></returns>
         [HttpDelete]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
-        [Authorize(Policy = "AdminPolicy")]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Delete([FromBody] Guid id, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Запрос на удаление роли по идентификатору: {id}");

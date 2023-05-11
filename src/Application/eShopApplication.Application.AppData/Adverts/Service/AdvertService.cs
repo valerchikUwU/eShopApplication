@@ -1,8 +1,10 @@
-﻿using eShopApplication.Application.AppData.Adverts.Repository;
+﻿using eShopApplication.Application.AppData.Account.Services;
+using eShopApplication.Application.AppData.Adverts.Repository;
 using eShopApplication.Contracts.Accounts;
 using eShopApplication.Contracts.Adverts;
 using eShopApplication.Domain.Advert;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -79,6 +81,12 @@ namespace eShopApplication.Application.AppData.Adverts.Service
                 AccountId = advert.AccountId,
                 FileIds = advert.FileIds
             };
+
+            if(result == null)
+            {
+                throw new Exception($"Объявление с идентификатором {id} не найдена");
+            }
+
             return result;
         }
 
@@ -88,6 +96,10 @@ namespace eShopApplication.Application.AppData.Adverts.Service
             var claims = _httpContextAccessor.HttpContext.User.Claims;
             var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             var advert = await GetAdvertByIdAsync(id, cancellationToken);
+            if (advert == null)
+            {
+                throw new Exception($"Объявление с идентификатором {id} не найдена");
+            }
             if (advert.AccountId != Guid.Parse(claimId))
             {
                 throw new Exception($"Ваш идентификатор: '{advert.AccountId}' не совпадает с идентификатором автора: '{id}'.");
@@ -125,6 +137,12 @@ namespace eShopApplication.Application.AppData.Adverts.Service
                 AccountId = s.AccountId,
                 FileIds = s.FileIds
             }).Where(s => s.Name.Contains(name)).Where(s => s.IsActive == true);
+
+            if (result == null)
+            {
+                throw new Exception($"Объявлений по ключевому полю {name} не найдены");
+            }
+
             return result.ToList();
         }
 
@@ -146,6 +164,12 @@ namespace eShopApplication.Application.AppData.Adverts.Service
                 AccountId = s.AccountId,
                 FileIds = s.FileIds
             }).Where(s => s.IsActive == true);
+
+            if (result == null)
+            {
+                throw new Exception("Объявлений не найдены");
+            }
+
             return result.ToList();
         }
 
@@ -156,10 +180,17 @@ namespace eShopApplication.Application.AppData.Adverts.Service
             var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
             var existingAdvert = await _advertRepository.GetAdvertByIdAsync(id, cancellationToken);
+
+            if (existingAdvert == null)
+            {
+                throw new Exception($"Объявление с идентификатором {id} не найдена");
+            }
+
             if (existingAdvert.AccountId != Guid.Parse(claimId)) 
             {
                 throw new Exception($"Ваш идентификатор: '{existingAdvert.AccountId}' не совпадает с идентификатором автора: '{id}'.");
             }
+
             existingAdvert.Name= updateAdvertDto.Name;
             existingAdvert.Description = updateAdvertDto.Description;
             existingAdvert.CategoryId = updateAdvertDto.CategoryId;
@@ -195,6 +226,12 @@ namespace eShopApplication.Application.AppData.Adverts.Service
                 AccountId = s.AccountId,
                 FileIds = s.FileIds
             }).Where(s => s.AccountId.Equals(id));
+
+            if (result == null)
+            {
+                throw new Exception("У вас нет объявлений");
+            }
+
             return result.ToList();
         }
     }

@@ -1,4 +1,6 @@
 ﻿using eShopApplication.Application.AppData.Adverts.Service;
+using eShopApplication.Contracts.Accounts;
+using eShopApplication.Contracts;
 using eShopApplication.Contracts.Adverts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
@@ -43,7 +45,9 @@ namespace eShopApplication.Host.Api.Controllers
         /// <response code="200">Запрос выполнен успешно</response>
         /// <returns>Список моделей объявлений.</returns>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<ReadAdvertDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<ReadAdvertDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status404NotFound)]
         [AllowAnonymous]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
@@ -59,6 +63,8 @@ namespace eShopApplication.Host.Api.Controllers
         /// <returns>Идентификатор созданного объвления</returns>
         [HttpPost]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status401Unauthorized)]
         [Authorize]
         public async Task<IActionResult> Create([FromBody] CreateAdvertDto createAdvertDto, CancellationToken cancellationToken)
         {
@@ -76,6 +82,9 @@ namespace eShopApplication.Host.Api.Controllers
         /// <returns>Идентификатор обновленного объявления</returns>
         [HttpPut("{id:Guid}")]
         [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status401Unauthorized)]
         [Authorize]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateAdvertDto updateAdvertDto, CancellationToken cancellationToken)
         {
@@ -87,13 +96,16 @@ namespace eShopApplication.Host.Api.Controllers
 
 
         /// <summary>
-        /// Удалить объявление по идентификатору.
+        /// Удалить объявление по идентификатору
         /// </summary>
-        /// <param name="id">Идентификатор.</param>
-        /// <param name="cancellationToken">Токен отмены.</param>
+        /// <param name="id">Идентификатор объявления</param>
+        /// <param name="cancellationToken">Токен отмены</param>
         /// <returns></returns>
         [HttpDelete("{id:Guid}")]
-        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status401Unauthorized)]
         [Authorize]
         public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
         {
@@ -108,10 +120,13 @@ namespace eShopApplication.Host.Api.Controllers
         /// <summary>
         /// Получить объявление по идентификатору.
         /// </summary>
-        /// <param name="id">Идентификатор.</param>
-        /// <param name="cancellationToken">Токен отмены.</param>
+        /// <param name="id">Идентификатор</param>
+        /// <param name="cancellationToken">Токен отмены</param>
         /// <returns>Модель объявления</returns>
         [HttpGet("{id:Guid}")]
+        [ProducesResponseType(typeof(ReadAdvertDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status404NotFound)]
         [AllowAnonymous]
         public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
         {
@@ -134,7 +149,9 @@ namespace eShopApplication.Host.Api.Controllers
         /// <param name="cancellationToken">Токен отмены</param>
         /// <returns>Список объвлений</returns>
         [HttpGet("by_name")]
-        [ProducesResponseType(typeof(IEnumerable<ReadAdvertDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<ReadAdvertDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status404NotFound)]
         [AllowAnonymous]
         public async Task<IActionResult> GetAllAdvertsByNameAsync(string name, CancellationToken cancellationToken)
         {
@@ -143,7 +160,19 @@ namespace eShopApplication.Host.Api.Controllers
             return StatusCode((int)HttpStatusCode.OK, result);
         }
 
+
+        /// <summary>
+        /// Частично обновить объявление
+        /// </summary>
+        /// <param name="id">Идентификатор модели</param>
+        /// <param name="patch">Изменяемые поля</param>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns>Обновленная модель объявления</returns>
         [HttpPatch("{id:Guid}")]
+        [ProducesResponseType(typeof(UpdateAdvertDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status401Unauthorized)]
         [Authorize]
         public async Task<IActionResult> PatchAdvertAsync(Guid id, [FromBody] JsonPatchDocument<UpdateAdvertDto> patch, CancellationToken cancellationToken)
         {
@@ -184,12 +213,20 @@ namespace eShopApplication.Host.Api.Controllers
             return StatusCode((int)HttpStatusCode.OK, model);
         }
 
+
+        /// <summary>
+        /// Получить все объявления авторизированного пользователя
+        /// </summary>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns>Список объявлений</returns>
         [HttpGet("current_user")]
-        [ProducesResponseType(typeof(IEnumerable<ReadAdvertDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<ReadAdvertDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorDto), StatusCodes.Status401Unauthorized)]
         [Authorize]
         public async Task<IActionResult> GetAllAdvertsOfCurrentUserAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Все посты данного пользователя");
             var result = await _advertService.GetAllAdvertsOfCurrentUserAsync(cancellationToken);
             return StatusCode((int)HttpStatusCode.OK, result);
         }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
@@ -18,7 +19,7 @@ namespace eShopApplication.Application.AppData.EmailService
         }
 
         /// <inheritdoc cref="IEmailService.SendEmailPasswordReset(string, string)"/>
-        public bool SendEmailPasswordReset(string email, string link)
+        public bool SendEmailPasswordReset(string email, JwtSecurityToken token)
         {
             MailMessage mailMessage = new MailMessage();
             mailMessage.From = new MailAddress("maksim4eg6@mail.ru");
@@ -28,7 +29,7 @@ namespace eShopApplication.Application.AppData.EmailService
             mailMessage.IsBodyHtml = true;
             mailMessage.Priority = MailPriority.High;
             mailMessage.SubjectEncoding = Encoding.UTF8;
-            mailMessage.Body = link;
+            mailMessage.Body = $"Your token: {new JwtSecurityTokenHandler().WriteToken(token)}";
 
             SmtpClient client= new SmtpClient();
             client.UseDefaultCredentials = false;

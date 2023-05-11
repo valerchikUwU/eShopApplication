@@ -24,6 +24,11 @@ namespace eShopApplication.Infrastructure.DataAccess
             _loggerFactory = loggerFactory;
         }
 
+        /// <summary>
+        /// Подключение к БД
+        /// </summary>
+        /// <param name="options"></param>
+        /// <exception cref="InvalidOperationException"></exception>
         public void Configure(DbContextOptionsBuilder<eShopApplicationDbContext> options)
         {
             var connectionString = _configuration.GetConnectionString(MSSQLConnectionStringName);
